@@ -1,0 +1,21 @@
+{
+  "name": "md-convert",
+  "version": "0.0.1",
+  "description": "convert HTML file to markdown",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "mdconvert": "./index.js"
+  },
+  "scripts": {
+    "mdconvert": "./index.js",
+    "test": "./index.js test/helloworld/index.html config/config-helloworld.json",
+    "test2": "./index.js test/apnews.com/index.html config/config-apnews.json"
+  },
+  "author": "Terry Morse",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "jsdom": "^19.0.0",
+    "turndown": "^7.1.1"
+  }
+}
