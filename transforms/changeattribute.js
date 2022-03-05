@@ -30,6 +30,8 @@ function changeAttribute (
 
   const regex = new RegExp(pattern, flags);
   let content = element.getAttribute(attrName);
+  if (!content) { return element; }
+
   content = content.replace(regex, newStr);
   element.setAttribute(attrName, content);
   return element;
