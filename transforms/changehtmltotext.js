@@ -13,7 +13,8 @@ function changeHtmlToText (
 ) {
   // console.log('changeHtmlToText()');
 
-  element.innerHTML = element.innerText;
+  // element.innerHTML = element.innerText;
+  element.innerHTML = "[CONTENT REPLACED BY changeHtmlToText]";
   return element;
 }
 
