@@ -10,7 +10,8 @@
     }
   },
   "omit": [
-    "h2"
+    "h2",
+    "[style='display:none']"
   ],
   "transform": [
     {
@@ -53,6 +54,14 @@
         {
           "type": "omitIfNoInnerHTML",
           "comment": "remove all empty elements"
+        }
+      ]
+    },
+    {
+      "selector": "#div-change-html-to-text",
+      "conversions": [
+        {
+          "type": "changeHtmlToText"
         }
       ]
     }

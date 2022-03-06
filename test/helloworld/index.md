@@ -17,4 +17,6 @@ An anchor tag: [terrymorse packages](https://example.com/packages/index.html)
 
 paragraph added with 'insertAfter'
 
+Text of an anchor element that should be converted to text
+
 This is a footer

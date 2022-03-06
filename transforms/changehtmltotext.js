@@ -1,8 +1,8 @@
 // mdconvert transform 'changeHtmlToText' -
-// replace element's innerHTML with innerText
+// replace element's innerHTML with textContent
 
 /**
- * replace an element's innerHTML with innerText
+ * replace an element's innerHTML with textContent
  * @param {HTMLDocument} document
  * @param {HTMLElement} element
  * @returns {HTMLElement}
@@ -11,10 +11,9 @@ function changeHtmlToText (
   document,
   element
 ) {
-  // console.log('changeHtmlToText()');
+  // console.log('changeHtmlToText(), element:', element);
 
-  // element.innerHTML = element.innerText;
-  element.innerHTML = "[CONTENT REPLACED BY changeHtmlToText]";
+  element.innerHTML = element.textContent;
   return element;
 }
 
