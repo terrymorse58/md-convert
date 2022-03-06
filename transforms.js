@@ -5,13 +5,15 @@ import { changeTagName } from './transforms/changetagname.js';
 import { changeInnerHTML } from './transforms/changeinnerhtml.js';
 import { insertAfter } from './transforms/insertafter.js';
 import { omitIfNoInnerHTML } from './transforms/omitifnoinnerhtml.js';
+import { changeHtmlToText } from './transforms/changehtmltotext.js';
 
 const transformer = {
   changeAttribute,
   changeTagName,
   changeInnerHTML,
   insertAfter,
-  omitIfNoInnerHTML
+  omitIfNoInnerHTML,
+  changeHtmlToText
 };
 
 export {

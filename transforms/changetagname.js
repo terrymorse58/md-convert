@@ -1,4 +1,4 @@
-// mdconvert transform 'changeTagName' - vjsmhr an HTML element's tagName
+// mdconvert transform 'changeTagName' - change an HTML element's tagName
 
 /**
  * change an HTML element's tagName
