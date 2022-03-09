@@ -14,19 +14,30 @@ const turndownOptions = {
   emDelimiter: '*'
 };
 
-const stdout = process.stdout,
-  htmlPath = process.argv[2],
-  configPath = process.argv[3];
+const stdout = process.stdout;
 
-if (!htmlPath || !configPath) {
-  console.error('Usage: mdconvert <source_file.html> <config_file.json>');
+const args = process.argv.slice(2);
+
+const iFlagSrc = args.indexOf('--src');
+const htmlPath = (iFlagSrc !== -1) ? args[iFlagSrc + 1] : null;
+
+const iFlagConfig = args.indexOf('--config');
+const configPath = (iFlagConfig !== -1) ? args[iFlagConfig + 1] : null;
+
+if (!htmlPath) {
+  console.error(
+    `USAGE: mdconvert --src <source_file> [--config <config_file>]`
+  );
   process.exit(0);
 }
 
+
 stdout.write(
 `Source file: '${htmlPath}'
-Config file: '${configPath}'
+Config file: '${configPath ? configPath : '(none)'}'
 `);
+
+// process.exit(0);
 
 try {
   const mdPath = htmlToMarkdown(htmlPath, configPath, turndownOptions);

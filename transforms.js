@@ -6,6 +6,7 @@ import { changeInnerHTML } from './transforms/changeinnerhtml.js';
 import { insertAfter } from './transforms/insertafter.js';
 import { omitIfNoInnerHTML } from './transforms/omitifnoinnerhtml.js';
 import { changeHtmlToText } from './transforms/changehtmltotext.js';
+import { changeNoscript } from './transforms/changenoscript.js';
 
 const transformer = {
   changeAttribute,
@@ -13,7 +14,8 @@ const transformer = {
   changeInnerHTML,
   insertAfter,
   omitIfNoInnerHTML,
-  changeHtmlToText
+  changeHtmlToText,
+  changeNoscript
 };
 
 export {

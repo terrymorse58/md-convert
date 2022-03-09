@@ -14,6 +14,19 @@ const defaultTdOptions = {
   emDelimiter: '*'
 };
 
+// default configuration
+/** @type {MdcConfig} **/
+const defaultConfig = {
+  frontMatter: {
+    title: {
+      selector: "title"
+    }
+  },
+  omit: ["script"],
+  transform: [],
+  select: "body"
+}
+
 /**
  * read a JSON file
  * @param {String} path
@@ -64,6 +77,11 @@ function readHtmlFile (path) {
  * @return {MdcConfig}
  */
 function readConfigFile (path) {
+
+  if (!path) {
+    return defaultConfig;
+  }
+
   if (!isExistingFilePath(path)) {
     throw `Error: config file '${path}' does not exist`;
   }
@@ -217,6 +235,9 @@ function htmlToMarkdown (
 
     // transform matching DOM elements
     transformElements(document, transform);
+
+    // console.log(`after transformElements body.innerHTML:`,
+    //   document.body.innerHTML);
 
     // create markdown content
     const markdown = selectedElementsToMarkdown(

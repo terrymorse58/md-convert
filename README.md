@@ -12,13 +12,13 @@ npm install [-g] md-convert
 ## Usage
 
 ```shell
-mdconvert <html-file> <config-file.json>
+mdconvert --src <html-file> [--config <config-file>]
 ```
 
 Where:
 
 `<html-file>` - any valid HTML file  
-`<config-file.json>` - a JSON file to configure how to perform the conversion
+`<config-file>` - a JSON file to configure the conversion process (optional)
 
 ### JSON Config File Properties
 

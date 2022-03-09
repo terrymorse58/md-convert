@@ -1,0 +1,22 @@
+{
+  "description": "Markdown conversion test for changeNoscript",
+  "frontMatter": {
+    "title": {
+      "selector": "title"
+    }
+  },
+  "omit": [],
+  "transform": [
+    {
+      "selector": "noscript",
+      "conversions": [
+        {
+          "type": "changeNoscript"
+        }
+      ]
+    }
+  ],
+  "select": [
+    "body"
+  ]
+}

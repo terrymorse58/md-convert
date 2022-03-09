@@ -20,7 +20,7 @@ function changeInnerHTML (
 ) {
   // console.log('changeInnerHTML()');
 
-  console.assert(pattern, `changeInnerHTML invalid pattern`);
+  console.assert(Boolean(pattern), `changeInnerHTML invalid pattern`);
   console.assert(typeof newStr === 'string',
     'problem with newStr');
 
