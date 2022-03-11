@@ -1,0 +1,60 @@
+{
+  "description": "Markdown conversion configuration for Washington Post article",
+  "frontMatter": {
+    "title": {
+      "selector": "head title"
+    },
+    "url": {
+      "selector": "meta[property='og:url']",
+      "attrName": "content"
+    },
+    "created": {
+      "selector": "div.formatDate",
+      "attrName": "data-timestamp-full"
+    }
+  },
+  "omit": [
+  ],
+  "transform": [
+    {
+      "comment": "everywhere: modify or remove text we don't want",
+      "selector": "main *",
+      "conversions": [
+        {
+          "type": "changeInnerHTML",
+          "pattern": "&nbsp;",
+          "flags": "g",
+          "newStr": " "
+        }
+      ]
+    },
+    {
+      "comment": "a tags: omit if empty, prepend domain name",
+      "selector": "main a",
+      "conversions": [
+        {
+          "type": "omitIfNoInnerHTML"
+        },
+        {
+          "type": "changeAttribute",
+          "attrName": "href",
+          "pattern": "^/",
+          "flags": "i",
+          "newStr": "https://npr.org/"
+        }
+      ]
+    },
+    {
+      "comment": "for images with no 'src' attr, get src from 'srcset'",
+      "selector": "img:not([src])",
+      "conversions": [
+        {
+          "type": "convertImgSrcset"
+        }
+      ]
+    }
+  ],
+  "select": [
+    "main"
+  ]
+}

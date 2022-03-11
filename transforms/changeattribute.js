@@ -18,20 +18,18 @@ function changeAttribute (
     flags = "",
     newStr}
 ) {
-  // console.log('changeAttr()');
+  // console.log('changeAttribute()');
+  // console.log(`  changeAttribute element:`, element);
 
-  console.assert(attrName, `changeAttr invalid attrName`);
-  console.assert(pattern, `changeAttr invalid pattern`);
-  console.assert(newStr, `changeAttr invalid newStr`);
-
-  if (!attrName || !pattern || !newStr) {
+  if (!element || !attrName || !pattern || typeof newStr !== 'string') {
     return element;
   }
 
-  const regex = new RegExp(pattern, flags);
   let content = element.getAttribute(attrName);
+
   if (!content) { return element; }
 
+  const regex = new RegExp(pattern, flags);
   content = content.replace(regex, newStr);
   element.setAttribute(attrName, content);
   return element;
