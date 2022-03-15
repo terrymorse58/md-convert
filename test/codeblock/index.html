@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code Block Example</title>
+</head>
+<body>
+<p>Code block from stackoverflow:</p>
+
+<pre class="default s-code-block"><code class="hljs language-javascript"><span
+  class="hljs-class"><span class="hljs-keyword">class</span> <span
+  class="hljs-title">MyComponent</span> <span
+  class="hljs-keyword">extends</span> <span
+  class="hljs-title">HTMLElement</span></span>{
+  myVal = <span class="hljs-number">1</span>;
+
+  constructor(){
+    const mybtn= document.createElement(<span class="hljs-symbol">'butto</span>n');
+    <span class="hljs-keyword">this</span>.shadowRoot.append(mybtn);
+  }
+
+  getMyVal(){
+    <span class="hljs-keyword">return</span> <span
+    class="hljs-keyword">this</span>.myVal
+  }
+}
+
+customElements.define(<span class="hljs-symbol">'my</span>-component', <span
+    class="hljs-type">MyComponent</span>);
+</code></pre>
+
+</body>
+</html>

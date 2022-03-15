@@ -4,6 +4,7 @@ import { JSDOM } from 'jsdom';
 import TurndownService from 'turndown';
 import * as fs from 'fs';
 import { transformer } from './transforms.js';
+import { tableRule } from './tablerule.js';
 
 /** @type TurndownOptions **/
 const defaultTdOptions = {
@@ -19,13 +20,13 @@ const defaultTdOptions = {
 const defaultConfig = {
   frontMatter: {
     title: {
-      selector: "title"
+      selector: 'title'
     }
   },
-  omit: ["script"],
+  omit: ['script'],
   transform: [],
-  select: "body"
-}
+  select: 'body'
+};
 
 /**
  * read a JSON file
@@ -192,6 +193,8 @@ function selectedElementsToMarkdown (
   const turndownService = new TurndownService(tdOptions);
 
   // console.log(`turndownService:`, JSON.stringify(turndownService, null, 2));
+
+  turndownService.addRule('tables', tableRule);
 
   // form array of elements
   const elements = [...document.querySelectorAll(selectConfig)];

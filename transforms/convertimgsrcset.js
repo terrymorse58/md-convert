@@ -1,4 +1,4 @@
-// mdconvert transform 'convertImgSrcset -
+// mdconvert transform 'convertImgSrcset' -
 //   convert img 'srcset' attribute to 'src' attribute
 
 /**
