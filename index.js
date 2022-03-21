@@ -3,7 +3,7 @@
 // convert an HTML file to Markdown
 // Usage: mdconvert <source_file.html> <config_file.json>
 
-import { htmlToMarkdown } from './mdconvert.js';
+import { htmlFileToMarkdownFile } from './mdconvert.js';
 
 /** @type TurndownOptions **/
 const turndownOptions = {
@@ -40,7 +40,7 @@ Config file: '${configPath ? configPath : '(none)'}'
 // process.exit(0);
 
 try {
-  const mdPath = htmlToMarkdown(htmlPath, configPath, turndownOptions);
+  const mdPath = htmlFileToMarkdownFile(htmlPath, configPath, turndownOptions);
   stdout.write(`Saved to ${mdPath}\n`);
 } catch (err) {
   console.error(`Error: ${err}`);

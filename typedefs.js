@@ -14,6 +14,7 @@
  * @typedef {String} MarkdownStr
  * @typedef {Object} FrontMatterConfig
  * @typedef {String} FrontMatterString
+ * @typedef {String} CSSSelector
  * @typedef {String|String[]} OmitConfig
  * @typedef {String|String[]} SelectConfig
  */

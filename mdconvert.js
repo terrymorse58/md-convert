@@ -23,7 +23,7 @@ const defaultConfig = {
       selector: 'title'
     }
   },
-  omit: ['script'],
+  omit: ['script', 'header', 'footer'],
   transform: [],
   select: 'body'
 };
@@ -57,9 +57,9 @@ function isExistingFilePath (path) {
 }
 
 /**
- * read HTML file
+ * read HTML file and return HTMLDocument
  * @param {String} path
- * @return {JSDOM}
+ * @return {HTMLDocument}
  */
 function readHtmlFile (path) {
   if (!isExistingFilePath(path)) {
@@ -69,11 +69,12 @@ function readHtmlFile (path) {
   const htmlStr = fs.readFileSync(path, {
     encoding: 'utf8'
   });
-  return new JSDOM(htmlStr);
+  const dom = new JSDOM(htmlStr);
+  return dom.window.document;
 }
 
 /**
- * read config file in JSON format
+ * read JSON config file and return MdcConfig object
  * @param {String} path
  * @return {MdcConfig}
  */
@@ -104,7 +105,7 @@ function readConfigFile (path) {
 }
 
 /**
- * create front matter string
+ * extract front matter from document
  * @param {HTMLDocument} document
  * @param {FrontMatterConfig} fmConfig
  * @return {FrontMatterString}
@@ -129,13 +130,13 @@ function createFrontMatter (document, fmConfig) {
 }
 
 /**
- * remove elements that match omits
+ * remove matching elements from document
  * @param {HTMLDocument} document
- * @param {OmitConfig} omitConfig
+ * @param {CSSSelector} selector
  */
-function removeOmits (document, omitConfig) {
-  if (!omitConfig) { return; }
-  const elements = [...document.querySelectorAll(omitConfig)];
+function removeElements (document, selector) {
+  if (!selector) { return; }
+  const elements = [...document.querySelectorAll(selector)];
   if (!elements) { return; }
   elements.forEach(element => {
     element.remove();
@@ -143,7 +144,7 @@ function removeOmits (document, omitConfig) {
 }
 
 /**
- * transform elements
+ * transform matching elements in document
  * @param {HTMLDocument} document
  * @param {Transformers} transformers
  */
@@ -177,18 +178,18 @@ function transformElements (document, transformers) {
 }
 
 /**
- * create markdown from the selected elements
+ * convert matching elements to markdown
  * @param {HTMLDocument} document
- * @param {SelectConfig} selectConfig
+ * @param {CSSSelector} selector
  * @param {TurndownOptions} tdOptions
  * @return {MarkdownStr}
  */
-function selectedElementsToMarkdown (
+function elementsToMarkdown (
   document,
-  selectConfig,
+  selector,
   tdOptions
 ) {
-  if (!selectConfig) { return ''; }
+  if (!selector) { return ''; }
 
   const turndownService = new TurndownService(tdOptions);
 
@@ -197,7 +198,7 @@ function selectedElementsToMarkdown (
   turndownService.addRule('tables', tableRule);
 
   // form array of elements
-  const elements = [...document.querySelectorAll(selectConfig)];
+  const elements = [...document.querySelectorAll(selector)];
 
   // convert each element to markdown
   return elements.reduce((acc, element) => {
@@ -213,7 +214,7 @@ function selectedElementsToMarkdown (
  * @param {TurndownOptions} tdOptions
  * @return {string} markdown file path
  */
-function htmlToMarkdown (
+function htmlFileToMarkdownFile (
   htmlPath,
   configPath,
   tdOptions = defaultTdOptions
@@ -225,27 +226,25 @@ function htmlToMarkdown (
     const mdPath = mdPathArray.join('.') + '.md';
 
     // read files
-    const dom = readHtmlFile(htmlPath);
-    const document = dom.window.document;
+    const document = readHtmlFile(htmlPath);
     const config = readConfigFile(configPath);
-    const {frontMatter, omit, transform, select} = config;
 
     // extract front matter from DOM
-    const frontMatterStr = createFrontMatter(document, frontMatter);
+    const frontMatterStr = createFrontMatter(document, config.frontMatter);
 
-    // remove matching omits from DOM
-    removeOmits(document, omit);
+    // remove matching omits from document
+    removeElements(document, config.omit);
 
-    // transform matching DOM elements
-    transformElements(document, transform);
+    // transform matching HTML elements
+    transformElements(document, config.transform);
 
     // console.log(`after transformElements body.innerHTML:`,
     //   document.body.innerHTML);
 
     // create markdown content
-    const markdown = selectedElementsToMarkdown(
+    const markdown = elementsToMarkdown(
       document,
-      select,
+      config.select,
       tdOptions
     );
 
@@ -260,7 +259,7 @@ function htmlToMarkdown (
 
   } catch (err) {
     const errmsg = err.message || err;
-    console.error(`htmlToMarkdown ERROR:`, err);
+    console.error(`htmlFileToMarkdownFile ERROR:`, err);
     throw errmsg;
   }
 }
@@ -269,8 +268,8 @@ export {
   readHtmlFile,
   readConfigFile,
   createFrontMatter,
-  removeOmits,
+  removeElements,
   transformElements,
-  selectedElementsToMarkdown,
-  htmlToMarkdown
+  elementsToMarkdown,
+  htmlFileToMarkdownFile
 };
