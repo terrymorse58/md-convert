@@ -12,7 +12,7 @@ npm install [-g] md-convert
 ## Usage
 
 ```shell
-mdconvert --src <html-file> [--config <config-file>]
+htmlmd --src <html-file> [--config <config-file>]
 ```
 
 Where:
