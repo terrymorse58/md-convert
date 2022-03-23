@@ -1,71 +1,73 @@
 {
   "description": "Markdown conversion configuration for apnews article",
-  "frontMatter": {
-    "title": {
-      "selector": "title"
+  "htmlMdConfig": {
+    "frontMatter": {
+      "title": {
+        "selector": "title"
+      },
+      "url": {
+        "selector": "meta[property='og:url']",
+        "attrName": "content"
+      },
+      "created": {
+        "selector": "span.Timestamp",
+        "attrName": "data-source"
+      }
     },
-    "url": {
-      "selector": "meta[property='og:url']",
-      "attrName": "content"
-    },
-    "created": {
-      "selector": "span.Timestamp",
-      "attrName": "data-source"
-    }
-  },
-  "omit": [
-    ".HubPeek",
-    "[class*='Component-adTitle']",
-    "script",
-    "span.Timestamp",
-    "img.ratio"
-  ],
-  "transform": [
-    {
-      "selector": "main *",
-      "comment": "replace all '&nbsp;' instances with space character",
-      "conversions": [
-        {
-          "type": "changeInnerHTML",
-          "pattern": "&nbsp;",
-          "flags": "g",
-          "newStr": " "
-        }
-      ]
-    },
-    {
-      "selector": ".Article a",
-      "conversions": [
-        {
-          "type": "omitIfNoInnerHTML",
-          "comment": "1. omit <a> element if innerHTML is empty"
-        },
-        {
-          "type": "changeAttribute",
-          "comment": "prepend domain to href attribute if it starts with '/'",
-          "attrName": "href",
-          "pattern": "^/",
-          "flags": "i",
-          "newStr": "https://apnews.com/"
-        }
-      ]
-    },
-    {
-      "selector": ".LeadFeature .embed-caption",
-      "conversions": [
-        {
-          "type": "changeTagName",
-          "comment": "change impage caption to 'blockquote'",
-          "tagName": "blockquote"
-        }
-      ]
-    }
-  ],
-  "select": [
-    "main .Header div.header-title",
-    "div.CardHeadline",
-    "div.Article",
-    ".LeadFeature img",
-    ".LeadFeature blockquote"
-  ]
+    "omit": [
+      ".HubPeek",
+      "[class*='Component-adTitle']",
+      "script",
+      "span.Timestamp",
+      "img.ratio"
+    ],
+    "transform": [
+      {
+        "selector": "main *",
+        "comment": "replace all '&nbsp;' instances with space character",
+        "conversions": [
+          {
+            "type": "changeInnerHTML",
+            "pattern": "&nbsp;",
+            "flags": "g",
+            "newStr": " "
+          }
+        ]
+      },
+      {
+        "selector": ".Article a",
+        "conversions": [
+          {
+            "type": "omitIfNoInnerHTML",
+            "comment": "1. omit <a> element if innerHTML is empty"
+          },
+          {
+            "type": "changeAttribute",
+            "comment": "prepend domain to href attribute if it starts with '/'",
+            "attrName": "href",
+            "pattern": "^/",
+            "flags": "i",
+            "newStr": "https://apnews.com/"
+          }
+        ]
+      },
+      {
+        "selector": ".LeadFeature .embed-caption",
+        "conversions": [
+          {
+            "type": "changeTagName",
+            "comment": "change impage caption to 'blockquote'",
+            "tagName": "blockquote"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "main .Header div.header-title",
+      "div.CardHeadline",
+      "div.Article",
+      ".LeadFeature img",
+      ".LeadFeature blockquote"
+    ]
+  }
 }

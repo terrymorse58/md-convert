@@ -89,16 +89,22 @@ function readConfigFile (path) {
   }
 
   try {
-    const config = readJsonFile(path);
+    let config = readJsonFile(path);
+
+    // config data is in property "htmlMdConfig"
+    const {htmlMdConfig} = config;
+    if (!htmlMdConfig) {
+      throw `Error: config file '${path}' does not have 'htmMdConfig' property`;
+    }
 
     // collapse arrays to comma-delimited strings
-    if (Array.isArray(config.select)) {
-      config.select = config.select.join(', ');
+    if (Array.isArray(htmlMdConfig.select)) {
+      htmlMdConfig.select = htmlMdConfig.select.join(', ');
     }
-    if (Array.isArray(config.omit)) {
-      config.omit = config.omit.join(', ');
+    if (Array.isArray(htmlMdConfig.omit)) {
+      htmlMdConfig.omit = htmlMdConfig.omit.join(', ');
     }
-    return config;
+    return htmlMdConfig;
   } catch (err) {
     throw err;
   }

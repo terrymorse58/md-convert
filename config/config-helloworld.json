@@ -1,72 +1,74 @@
 {
-  "description": "Markdown conversion options for helloworld.com",
-  "frontMatter": {
-    "title": {
-      "selector": "title"
+  "description": "Markdown conversion options for helloworld",
+  "htmlMdConfig": {
+    "frontMatter": {
+      "title": {
+        "selector": "title"
+      },
+      "url": {
+        "selector": "meta[property='og:url']",
+        "attrName": "content"
+      }
     },
-    "url": {
-      "selector": "meta[property='og:url']",
-      "attrName": "content"
-    }
-  },
-  "omit": [
-    "h2",
-    "[style='display:none']"
-  ],
-  "transform": [
-    {
-      "selector": "a",
-      "conversions": [
-        {
-          "type": "changeAttribute",
-          "comment": "prepend 'https://example.com/' to href attribute that starts with '/'",
-          "attrName": "href",
-          "pattern": "^/",
-          "flags": "i",
-          "newStr": "https://example.com/"
-        }
-      ]
-    },
-    {
-      "selector": "div.example",
-      "conversions": [
-        {
-          "type": "changeTagName",
-          "comment": "change tagName to 'p'",
-          "tagName": "p"
-        },
-        {
-          "type": "changeInnerHTML",
-          "comment": "change innerHTML to something else",
-          "pattern": "^.*",
-          "newStr": "<strong>'div.example changed to 'p', then made STRONG</strong>"
-        },
-        {
-          "type": "insertAfter",
-          "comment": "add paragraph after div.example",
-          "htmlStr": "<p>paragraph added with 'insertAfter'</p>"
-        }
-      ]
-    },
-    {
-      "selector": "body *",
-      "conversions": [
-        {
-          "type": "omitIfNoInnerHTML",
-          "comment": "remove all empty elements"
-        }
-      ]
-    },
-    {
-      "selector": "#div-change-html-to-text",
-      "conversions": [
-        {
-          "type": "changeHtmlToText"
-        }
-      ]
-    }
-  ],
-  "select": [
-    "body"
-  ]
+    "omit": [
+      "h2",
+      "[style='display:none']"
+    ],
+    "transform": [
+      {
+        "selector": "a",
+        "conversions": [
+          {
+            "type": "changeAttribute",
+            "comment": "prepend 'https://example.com/' to href attribute that starts with '/'",
+            "attrName": "href",
+            "pattern": "^/",
+            "flags": "i",
+            "newStr": "https://example.com/"
+          }
+        ]
+      },
+      {
+        "selector": "div.example",
+        "conversions": [
+          {
+            "type": "changeTagName",
+            "comment": "change tagName to 'p'",
+            "tagName": "p"
+          },
+          {
+            "type": "changeInnerHTML",
+            "comment": "change innerHTML to something else",
+            "pattern": "^.*",
+            "newStr": "<strong>'div.example changed to 'p', then made STRONG</strong>"
+          },
+          {
+            "type": "insertAfter",
+            "comment": "add paragraph after div.example",
+            "htmlStr": "<p>paragraph added with 'insertAfter'</p>"
+          }
+        ]
+      },
+      {
+        "selector": "body *",
+        "conversions": [
+          {
+            "type": "omitIfNoInnerHTML",
+            "comment": "remove all empty elements"
+          }
+        ]
+      },
+      {
+        "selector": "#div-change-html-to-text",
+        "conversions": [
+          {
+            "type": "changeHtmlToText"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
 }

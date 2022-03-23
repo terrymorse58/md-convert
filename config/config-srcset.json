@@ -1,22 +1,24 @@
 {
-  "description": "Markdown conversion test for changeNoscript",
-  "frontMatter": {
-    "title": {
-      "selector": "title"
-    }
-  },
-  "omit": [],
-  "transform": [
-    {
-      "selector": "img:not([src])",
-      "conversions": [
-        {
-          "type": "convertImgSrcset"
-        }
-      ]
-    }
-  ],
-  "select": [
-    "body"
-  ]
+  "description": "Markdown conversion test for changeNoscript test",
+  "htmlMdConfig": {
+    "frontMatter": {
+      "title": {
+        "selector": "title"
+      }
+    },
+    "omit": [],
+    "transform": [
+      {
+        "selector": "img:not([src])",
+        "conversions": [
+          {
+            "type": "convertImgSrcset"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
 }

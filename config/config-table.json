@@ -1,0 +1,15 @@
+{
+  "description": "Markdown conversion for table conversion test",
+  "htmlMdConfig": {
+    "frontMatter": {
+      "title": {
+        "selector": "title"
+      }
+    },
+    "omit": [],
+    "transform": [],
+    "select": [
+      "body"
+    ]
+  }
+}
