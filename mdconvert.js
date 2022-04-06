@@ -187,13 +187,13 @@ function transformElements (document, transformers) {
  * convert matching elements to markdown
  * @param {HTMLDocument} document
  * @param {CSSSelector} selector
- * @param {TurndownOptions} tdOptions
+ * @param {TurndownOptions} [tdOptions]
  * @return {MarkdownStr}
  */
 function elementsToMarkdown (
   document,
   selector,
-  tdOptions
+  tdOptions = defaultTdOptions
 ) {
   if (!selector) { return ''; }
 
@@ -217,7 +217,7 @@ function elementsToMarkdown (
  * convert html file to markdown file
  * @param {String} htmlPath
  * @param {String} configPath
- * @param {TurndownOptions} tdOptions
+ * @param {TurndownOptions} [tdOptions]
  * @return {string} markdown file path
  */
 function htmlFileToMarkdownFile (
