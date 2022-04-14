@@ -1,0 +1,21 @@
+{
+  "description": "conversion test for changeWapoDivToImg",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [],
+    "transform": [
+      {
+        "comment": "change Washington Post div to img",
+        "selector": "div.powa-wrapper",
+        "conversions": [
+          {
+            "type": "changeWapoDivToImg"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}

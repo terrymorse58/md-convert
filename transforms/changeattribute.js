@@ -4,10 +4,10 @@
  * change an HTML element's attribute
  * @param {HTMLDocument} document
  * @param {HTMLElement} element
- * @param {String} attrName
- * @param {String} pattern
- * @param {String} [flags]
- * @param {String} newStr
+ * @param {String} attrName - name of element attribute
+ * @param {String} pattern - regex pattern to find & repalce
+ * @param {String} [flags] - regex flags
+ * @param {String} newStr - replacement string
  * @returns {HTMLElement}
  */
 function changeAttribute (
