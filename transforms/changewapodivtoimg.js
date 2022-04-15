@@ -4,7 +4,7 @@ function changeWapoDivToImg (
   document,
   element
 ) {
-  console.log(`changeWapoDivToImg()`);
+  // console.log(`changeWapoDivToImg()`);
 
   if (!element ||
     element.tagName !== 'DIV' ||
