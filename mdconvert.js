@@ -2,7 +2,7 @@
 
 import { JSDOM } from 'jsdom';
 import TurndownService from 'turndown';
-import * as fs from 'fs';
+import { readFileSync, statSync, writeFileSync } from 'fs';
 import { transformer } from './transforms.js';
 import { tableRule } from './tablerule.js';
 
@@ -34,7 +34,7 @@ const defaultConfig = {
  * @return {Object}
  */
 function readJsonFile (path) {
-  const json = fs.readFileSync(path, {encoding: 'utf8'});
+  const json = readFileSync(path, {encoding: 'utf8'});
   try {
     return JSON.parse(json);
   } catch (err) {
@@ -49,7 +49,7 @@ function readJsonFile (path) {
  */
 function isExistingFilePath (path) {
   try {
-    const fStats = fs.statSync(path);
+    const fStats = statSync(path);
     return fStats.isFile();
   } catch (err) {
     return false;
@@ -66,7 +66,7 @@ function readHtmlFile (path) {
     throw new Error(`Error: HTML file '${path}' does not exist`);
   }
 
-  const htmlStr = fs.readFileSync(path, {
+  const htmlStr = readFileSync(path, {
     encoding: 'utf8'
   });
   const dom = new JSDOM(htmlStr);
@@ -146,6 +146,23 @@ function removeElements (document, selector) {
   if (!elements) { return; }
   elements.forEach(element => {
     element.remove();
+  });
+}
+
+/**
+ * perform any special encoding of URIs
+ * @param {HTMLDocument} document
+ */
+function encodeAllURIs (document) {
+  // encode all a href attrs
+  const as = [...document.querySelectorAll('a[href^="http"]')];
+  as.forEach(a => {
+    a.href = a.href.replace('(', '%28').replace(')', '%29');
+  });
+  // encode all img src attrs
+  const imgs = [...document.querySelectorAll('img[src^="http"]')];
+  imgs.forEach(img => {
+    img.href = img.href.replace('(', '%28').replace(')', '%29');
   });
 }
 
@@ -244,6 +261,9 @@ function htmlFileToMarkdownFile (
     // transform matching HTML elements
     transformElements(document, config.transform);
 
+    // do any special encoding of URIs
+    encodeAllURIs(document);
+
     // console.log(`after transformElements body.innerHTML:`,
     //   document.body.innerHTML);
 
@@ -255,7 +275,7 @@ function htmlFileToMarkdownFile (
     );
 
     // save markdown file
-    fs.writeFileSync(
+    writeFileSync(
       mdPath,
       frontMatterStr + markdown,
       {encoding: 'utf8'}
@@ -275,6 +295,7 @@ export {
   readConfigFile,
   createFrontMatter,
   removeElements,
+  encodeAllURIs,
   transformElements,
   elementsToMarkdown,
   htmlFileToMarkdownFile
