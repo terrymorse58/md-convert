@@ -162,7 +162,7 @@ function encodeAllURIs (document) {
   // encode all img src attrs
   const imgs = [...document.querySelectorAll('img[src^="http"]')];
   imgs.forEach(img => {
-    img.href = img.href.replace('(', '%28').replace(')', '%29');
+    img.src = img.src.replace('(', '%28').replace(')', '%29');
   });
 }
 
