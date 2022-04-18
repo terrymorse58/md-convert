@@ -9,11 +9,13 @@ import { changeHtmlToText } from './transforms/changehtmltotext.js';
 import { changeNoscript } from './transforms/changenoscript.js';
 import { convertImgSrcset } from './transforms/convertimgsrcset.js';
 import { changeWapoDivToImg} from './transforms/changewapodivtoimg.js';
+import { insertBefore } from './transforms/insertbefore.js';
 
 const transformer = {
   changeAttribute,
   changeTagName,
   changeInnerHTML,
+  insertBefore,
   insertAfter,
   omitIfNoInnerHTML,
   changeHtmlToText,

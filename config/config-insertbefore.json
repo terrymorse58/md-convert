@@ -1,0 +1,21 @@
+{
+  "description": "test converson for insertBefore",
+  "htmlMdConfig": {
+    "omit": [],
+    "transform": [
+      {
+        "comment": "insert some html before h1",
+        "selector": "h1",
+        "conversions": [
+          {
+            "type": "insertBefore",
+            "htmlStr": "<div>Inserted using <i>insertBefore</i></div"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}
