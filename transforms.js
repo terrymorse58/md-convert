@@ -10,6 +10,7 @@ import { changeNoscript } from './transforms/changenoscript.js';
 import { convertImgSrcset } from './transforms/convertimgsrcset.js';
 import { changeWapoDivToImg} from './transforms/changewapodivtoimg.js';
 import { insertBefore } from './transforms/insertbefore.js';
+import { changeVideoPosterToImg } from './transforms/changevideopostertoimg.js';
 
 const transformer = {
   changeAttribute,
@@ -21,7 +22,8 @@ const transformer = {
   changeHtmlToText,
   changeNoscript,
   convertImgSrcset,
-  changeWapoDivToImg
+  changeWapoDivToImg,
+  changeVideoPosterToImg
 };
 
 export {

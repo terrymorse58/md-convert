@@ -1,0 +1,21 @@
+{
+  "description": "conversion test for changeVideoPosterToImg",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [],
+    "transform": [
+      {
+        "comment": "change video with poster to img",
+        "selector": "video",
+        "conversions": [
+          {
+            "type": "changeVideoPosterToImg"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}
