@@ -1,0 +1,20 @@
+{
+  "description": "test combineDuplicates",
+  "htmlMdConfig": {
+    "omit": [],
+    "transform": [
+      {
+        "comment": "combine run of 'strong' elements",
+        "selector": "strong",
+        "conversions": [
+          {
+            "type": "combineDuplicates"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}

@@ -11,6 +11,7 @@ import { convertImgSrcset } from './transforms/convertimgsrcset.js';
 import { changeWapoDivToImg} from './transforms/changewapodivtoimg.js';
 import { insertBefore } from './transforms/insertbefore.js';
 import { changeVideoPosterToImg } from './transforms/changevideopostertoimg.js';
+import { combineDuplicates } from './transforms/combineduplicates.js';
 
 const transformer = {
   changeAttribute,
@@ -23,7 +24,8 @@ const transformer = {
   changeNoscript,
   convertImgSrcset,
   changeWapoDivToImg,
-  changeVideoPosterToImg
+  changeVideoPosterToImg,
+  combineDuplicates
 };
 
 export {
