@@ -1,0 +1,21 @@
+{
+  "description": "conversion test for changeVideoPosterToImg",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [],
+    "transform": [
+      {
+        "comment": "hange anchor if it has a child block element",
+        "selector": "a",
+        "conversions": [
+          {
+            "type": "changeAnchorWithBlockChild"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}
