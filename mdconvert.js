@@ -220,8 +220,8 @@ function elementsToMarkdown (
 
   turndownService.addRule('tables', tableRule);
 
-  // form array of elements
-  const elements = [...document.querySelectorAll(selector)];
+  // form array of elements (use Set() to ensure no duplicates)
+  const elements = [...new Set(document.querySelectorAll(selector))];
 
   // convert each element to markdown
   return elements.reduce((acc, element) => {
