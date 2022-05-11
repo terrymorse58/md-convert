@@ -39,11 +39,11 @@ const tableRule = {
         mdOutput += (isFirstCell ? '| ' : ' | ') + cell.textContent;
 
         // add padding spaces to cell (not necessary but it looks better)
-        const padding = colWidths[iCell] - cell.textContent.length;
-        if (padding > 0) {
-          mdOutput += ' '.repeat(padding);
-          // for (let k = 0; k < padding; k++) { mdOutput += ' '; }
-        }
+        // const padding = colWidths[iCell] - cell.textContent.length;
+        // if (padding > 0) {
+        //   mdOutput += ' '.repeat(padding);
+        //   // for (let k = 0; k < padding; k++) { mdOutput += ' '; }
+        // }
       }
 
       mdOutput += ' |\n';  // row closer
@@ -54,7 +54,8 @@ const tableRule = {
         for (let iCell = 0; iCell < cells.length; iCell++) {
           if (iCell > 0) { mdOutput += ' | ';}
           const dashes = colWidths[iCell];
-          for (let k = 0; k < dashes; k++) { mdOutput += '-'; }
+          // for (let k = 0; k < dashes; k++) { mdOutput += '-'; }
+          mdOutput += '---';
         }
         mdOutput += ' |\n'; // dashes line closer
       }

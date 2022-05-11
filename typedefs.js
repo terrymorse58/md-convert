@@ -33,6 +33,7 @@
  * mdconvert config data from JSON file
  * @typedef {Object} MdcConfig
  * @property {FrontMatterConfig} frontMatter
+ * @property {Boolean} convertTables
  * @property {OmitConfig} omit
  * @property {Transformers} transform
  * @property {SelectConfig} select

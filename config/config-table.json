@@ -6,6 +6,7 @@
         "selector": "title"
       }
     },
+    "convertTables": false,
     "omit": [],
     "transform": [],
     "select": [

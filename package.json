@@ -20,7 +20,8 @@
     "test8": "./index.js --src test/insertbefore/index.html --config config/config-insertbefore.json",
     "test9": "./index.js --src test/changevideoposter/index.html --config config/config-changevideoposter.json",
     "test10": "./index.js --src test/combinedups/index.html --config config/config-combinedups.json",
-    "test11": "./index.js --src test/anchorwithblock/index.html --config config/config-changeanchorwithblock.json"
+    "test11": "./index.js --src test/anchorwithblock/index.html --config config/config-changeanchorwithblock.json",
+    "test12": "./index.js --src test/table-complex/index.html --config config/config-table.json"
   },
   "author": "Terry Morse",
   "license": "UNLICENSED",

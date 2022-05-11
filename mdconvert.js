@@ -23,6 +23,7 @@ const defaultConfig = {
       selector: 'title'
     }
   },
+  convertTables: false,
   omit: ['script', 'header', 'footer'],
   transform: [],
   select: 'body'
@@ -95,6 +96,10 @@ function readConfigFile (path) {
     const {htmlMdConfig} = config;
     if (!htmlMdConfig) {
       throw `Error: config file '${path}' does not have 'htmMdConfig' property`;
+    }
+
+    if (typeof config.convertTables === 'undefined') {
+      config.convertTables = false;
     }
 
     // collapse arrays to comma-delimited strings
@@ -204,12 +209,14 @@ function transformElements (document, transformers) {
  * convert matching elements to markdown
  * @param {HTMLDocument} document
  * @param {CSSSelector} selector
+ * @param {Boolean} convertTables
  * @param {TurndownOptions} [tdOptions]
  * @return {MarkdownStr}
  */
 function elementsToMarkdown (
   document,
   selector,
+  convertTables,
   tdOptions = defaultTdOptions
 ) {
   if (!selector) { return ''; }
@@ -218,7 +225,13 @@ function elementsToMarkdown (
 
   // console.log(`turndownService:`, JSON.stringify(turndownService, null, 2));
 
-  turndownService.addRule('tables', tableRule);
+  if (convertTables) {
+    console.log('elementsToMarkdown converting tables to markdown');
+    turndownService.addRule('tables', tableRule);
+  } else {
+    console.log('elementsToMarkdown keeping HTML tables');
+    turndownService.keep(['table', 'tr', 'th', 'td']);
+  }
 
   // form array of elements (use Set() to ensure no duplicates)
   const elements = [...new Set(document.querySelectorAll(selector))];
@@ -271,6 +284,7 @@ function htmlFileToMarkdownFile (
     const markdown = elementsToMarkdown(
       document,
       config.select,
+      config.convertTables,
       tdOptions
     );
 
