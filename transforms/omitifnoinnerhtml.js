@@ -1,8 +1,8 @@
 // mdconvert transform 'omitIfNoInnerHTML' - remove element if its innerHTML
 // is empty
 
-// element types that cannot have children
-const noChildEls = [
+// element types that will be excluded from evaluation
+const excludeEls = [
   'AREA',
   'BASE',
   'BR',
@@ -18,6 +18,8 @@ const noChildEls = [
   'PARAM',
   'SOURCE',
   'TRACK',
+  'TD',
+  'TH',
   'WBR'
 ];
 
@@ -33,7 +35,7 @@ function omitIfNoInnerHTML (
 ) {
   // console.log('omitIfNoInnerHTML()');
 
-  if (noChildEls.includes(element.tagName)) { return element; }
+  if (excludeEls.includes(element.tagName)) { return element; }
 
     if (element.innerHTML.length === 0) {
       element.remove();
