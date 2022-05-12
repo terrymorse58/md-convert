@@ -1,16 +1,11 @@
 {
-  "description": "Markdown conversion for table conversion test",
+  "description": "test of img changeAttribute",
   "htmlMdConfig": {
-    "frontMatter": {
-      "title": {
-        "selector": "title"
-      }
-    },
-    "convertTables": false,
+    "frontMatter": null,
     "omit": [],
     "transform": [
       {
-        "comment": "strip srcset from img",
+        "comment": "strip srcset from img, prepend 'https' to src",
         "selector": "img",
         "conversions": [
           {
@@ -19,6 +14,13 @@
             "pattern": "^(.*?)$",
             "flags": "gm",
             "newStr": ""
+          },
+          {
+            "type": "changeAttribute",
+            "attrName": "src",
+            "pattern": "^\/\/",
+            "flags": "gm",
+            "newStr": "https://"
           }
         ]
       }

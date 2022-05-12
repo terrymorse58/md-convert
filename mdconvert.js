@@ -226,10 +226,10 @@ function elementsToMarkdown (
   // console.log(`turndownService:`, JSON.stringify(turndownService, null, 2));
 
   if (convertTables) {
-    console.log('elementsToMarkdown converting tables to markdown');
+    // console.log('elementsToMarkdown converting tables to markdown');
     turndownService.addRule('tables', tableRule);
   } else {
-    console.log('elementsToMarkdown keeping HTML tables');
+    // console.log('elementsToMarkdown keeping HTML tables');
     turndownService.keep(['table', 'tr', 'th', 'td']);
   }
 

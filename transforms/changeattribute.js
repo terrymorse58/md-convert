@@ -19,7 +19,11 @@ function changeAttribute (
     newStr}
 ) {
   // console.log('changeAttribute()');
-  // console.log(`  changeAttribute element:`, element);
+  // console.log(`  changeAttribute element.outerHTML:`, element.outerHTML);
+  console.assert(
+    attrName && attrName.length > 0,
+    `changeAttribute invalid attrName: '${attrName}'`
+  );
 
   if (!element || !attrName || !pattern || typeof newStr !== 'string') {
     return element;
