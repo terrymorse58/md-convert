@@ -47,14 +47,14 @@ function convertCNNImg (
   document,
   element
 ) {
-  console.log('convertCNNImg() element:', element);
+  // console.log('convertCNNImg() element:', element);
 
   const bestImgUrl = getLargestImg(element);
   if (!bestImgUrl) { return element; }
 
   element.src = bestImgUrl;
 
-  console.log(`  convertCNNImg element.outerHTML`, element.outerHTML);
+  // console.log(`  convertCNNImg element.outerHTML`, element.outerHTML);
 
   return element;
 }
