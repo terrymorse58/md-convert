@@ -15,6 +15,7 @@ import { combineDuplicates } from './transforms/combineduplicates.js';
 import {
   changeAnchorWithBlockChild
 } from './transforms/changeanchorwithblock.js';
+import { convertCNNImg } from './transforms/convertcnnimg.js'
 
 
 const transformer = {
@@ -30,7 +31,8 @@ const transformer = {
   changeWapoDivToImg,
   changeVideoPosterToImg,
   combineDuplicates,
-  changeAnchorWithBlockChild
+  changeAnchorWithBlockChild,
+  convertCNNImg
 };
 
 export {

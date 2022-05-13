@@ -1,0 +1,21 @@
+{
+  "description": "test14 - test conversion of CNN image",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [],
+    "transform": [
+      {
+        "comment": "convert CNN images",
+        "selector": "img",
+        "conversions": [
+          {
+            "type": "convertCNNImg"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}
