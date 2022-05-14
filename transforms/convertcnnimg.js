@@ -19,7 +19,7 @@ sample CNN image:
 */
 
 // img attributes ordered in decreasing size
-const attrNames = ['data-src-full16x9', 'data-src-large', 'data-src-medium',
+const attrNames = ['data-src-large', 'data-src-full16x9', 'data-src-medium',
   'data-src-small', 'data-src-xsmall', 'data-src-mini'];
 
 /**
