@@ -1,0 +1,43 @@
+{
+  "description": "test14 - test conversion of apnews lead image",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [
+      "div.ImageGalleryCount"
+    ],
+    "transform": [
+      {
+        "comment": "convert apnews lead image",
+        "selector": "div[data-key='media-placeholder'] > img",
+        "conversions": [
+          {
+            "type": "convertApnewsImg"
+          }
+        ]
+      },
+      {
+        "comment": "convert a.LeadFeature to div",
+        "selector": "a.LeadFeature",
+        "conversions": [
+          {
+            "type": "changeTagName",
+            "tagName": "div"
+          }
+        ]
+      },
+      {
+        "comment": "convert div.embed-caption to blockquote",
+        "selector": "div.embed-caption",
+        "conversions": [
+          {
+            "type": "changeTagName",
+            "tagName": "blockquote"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}

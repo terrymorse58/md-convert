@@ -16,6 +16,7 @@ import {
   changeAnchorWithBlockChild
 } from './transforms/changeanchorwithblock.js';
 import { convertCNNImg } from './transforms/convertcnnimg.js'
+import { convertApnewsImg } from './transforms/convertapnewsimg.js';
 
 
 const transformer = {
@@ -32,7 +33,8 @@ const transformer = {
   changeVideoPosterToImg,
   combineDuplicates,
   changeAnchorWithBlockChild,
-  convertCNNImg
+  convertCNNImg,
+  convertApnewsImg
 };
 
 export {
