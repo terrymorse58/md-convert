@@ -20,13 +20,13 @@
  */
 
 /**
- * @typedef {Object} Transformer
+ * @typedef {Object} DomTransformer
  * @property {String} selector
  * @property {Array<Object>} conversions
  */
 
 /**
- * @typedef {Transformer[]} Transformers
+ * @typedef {DomTransformer[]} DomTransformers
  */
 
 /**
@@ -35,6 +35,6 @@
  * @property {FrontMatterConfig} frontMatter
  * @property {Boolean} convertTables
  * @property {OmitConfig} omit
- * @property {Transformers} transform
+ * @property {DomTransformers} transform
  * @property {SelectConfig} select
  */

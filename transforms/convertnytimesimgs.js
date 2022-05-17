@@ -129,7 +129,7 @@ function convertNytimesImgs (document,
   let domImageEls = findImageContainers(body);
 
   subjects = domImageEls.map(element => {
-    return { element };
+    return {element};
   });
 
   const initStateSrcUrls = getInitialStateImages(window, document);
@@ -145,7 +145,12 @@ function convertNytimesImgs (document,
   // add urls to subjects
   subjects.forEach((subject, index) => {
     subject.url = initStateSrcUrls[index];
-  })
+  });
+
+  console.log(`subjects:`);
+  subjects.forEach(({element, url}) => {
+    console.log(`\n  element: ${element.outerHTML}\n  url: ${url}`);
+  });
 
   // add src url to each subject element
   subjects.forEach(({element, url}) => {
@@ -161,11 +166,6 @@ function convertNytimesImgs (document,
     } else {
       console.error(`convertNytimesImgs unknown dom element:`, element);
     }
-  });
-
-  console.log(`subjects:`);
-  subjects.forEach(({element, url}) => {
-    console.log(`\n  element: ${element.outerHTML}\n  url: ${url}`);
   });
 
   return body;
