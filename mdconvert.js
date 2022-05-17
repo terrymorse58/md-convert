@@ -58,9 +58,9 @@ function isExistingFilePath (path) {
 }
 
 /**
- * read HTML file and return HTMLDocument
+ * read HTML file and return {dom, window, document}
  * @param {String} path
- * @return {HTMLDocument}
+ * @return {{dom: JSDOM, window: Window, document: HTMLDocument}}
  */
 function readHtmlFile (path) {
   if (!isExistingFilePath(path)) {
@@ -71,7 +71,11 @@ function readHtmlFile (path) {
     encoding: 'utf8'
   });
   const dom = new JSDOM(htmlStr);
-  return dom.window.document;
+  return {
+    dom,
+    window: dom.window,
+    document: dom.window.document
+  };
 }
 
 /**
@@ -173,10 +177,15 @@ function encodeAllURIs (document) {
 
 /**
  * transform matching elements in document
+ * @param {Window} window
  * @param {HTMLDocument} document
  * @param {Transformers} transformers
  */
-function transformElements (document, transformers) {
+function transformElements (
+  window,
+  document,
+  transformers
+) {
 
   // console.log(`\ntransformElements() transformers:`, transformers);
 
@@ -199,7 +208,7 @@ function transformElements (document, transformers) {
           throw `Error: unknown transform conversion type '${conversion.type}'`;
         }
 
-        element = transFn(document, element, conversion);
+        element = transFn(document, element, conversion, window);
       }
     }
   }
@@ -233,6 +242,9 @@ function elementsToMarkdown (
     turndownService.keep(['table', 'tr', 'th', 'td']);
   }
 
+  // never try to convert scripts to markdown
+  turndownService.remove('script');
+
   // form array of elements (use Set() to ensure no duplicates)
   const elements = [...new Set(document.querySelectorAll(selector))];
 
@@ -262,7 +274,7 @@ function htmlFileToMarkdownFile (
     const mdPath = mdPathArray.join('.') + '.md';
 
     // read files
-    const document = readHtmlFile(htmlPath);
+    const {dom, document, window} = readHtmlFile(htmlPath);
     const config = readConfigFile(configPath);
 
     // extract front matter from DOM
@@ -272,7 +284,7 @@ function htmlFileToMarkdownFile (
     removeElements(document, config.omit);
 
     // transform matching HTML elements
-    transformElements(document, config.transform);
+    transformElements(window, document, config.transform);
 
     // do any special encoding of URIs
     encodeAllURIs(document);

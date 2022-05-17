@@ -1,0 +1,22 @@
+{
+  "description": "test16 - test conversion images in nytimes.com page",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [
+    ],
+    "transform": [
+      {
+        "comment": "convert all nytimes images",
+        "selector": "body",
+        "conversions": [
+          {
+            "type": "convertNytimesImgs"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}

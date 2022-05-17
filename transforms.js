@@ -17,6 +17,7 @@ import {
 } from './transforms/changeanchorwithblock.js';
 import { convertCNNImg } from './transforms/convertcnnimg.js'
 import { convertApnewsImg } from './transforms/convertapnewsimg.js';
+import { convertNytimesImgs } from './transforms/convertnytimesimgs.js';
 
 
 const transformer = {
@@ -34,7 +35,8 @@ const transformer = {
   combineDuplicates,
   changeAnchorWithBlockChild,
   convertCNNImg,
-  convertApnewsImg
+  convertApnewsImg,
+  convertNytimesImgs
 };
 
 export {
