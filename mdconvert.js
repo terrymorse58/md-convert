@@ -23,7 +23,7 @@ const defaultConfig = {
       selector: 'title'
     }
   },
-  convertTables: false,
+  convertTablesToMD: false,
   omit: ['script', 'header', 'footer'],
   transform: [],
   select: 'body'
@@ -102,8 +102,8 @@ function readConfigFile (path) {
       throw `Error: config file '${path}' does not have 'htmMdConfig' property`;
     }
 
-    if (typeof config.convertTables === 'undefined') {
-      config.convertTables = false;
+    if (typeof config.convertTablesToMD === 'undefined') {
+      config.convertTablesToMD = false;
     }
 
     // collapse arrays to comma-delimited strings
@@ -218,14 +218,14 @@ function transformElements (
  * convert matching elements to markdown
  * @param {HTMLDocument} document
  * @param {CSSSelector} selector
- * @param {Boolean} convertTables
+ * @param {Boolean} [convertTablesToMD]
  * @param {TurndownOptions} [tdOptions]
  * @return {MarkdownStr}
  */
 function elementsToMarkdown (
   document,
   selector,
-  convertTables,
+  convertTablesToMD = false,
   tdOptions = defaultTdOptions
 ) {
   if (!selector) { return ''; }
@@ -234,7 +234,7 @@ function elementsToMarkdown (
 
   // console.log(`turndownService:`, JSON.stringify(turndownService, null, 2));
 
-  if (convertTables) {
+  if (convertTablesToMD) {
     // console.log('elementsToMarkdown converting tables to markdown');
     turndownService.addRule('tables', tableRule);
   } else {
@@ -296,7 +296,7 @@ function htmlFileToMarkdownFile (
     const markdown = elementsToMarkdown(
       document,
       config.select,
-      config.convertTables,
+      config.convertTablesToMD,
       tdOptions
     );
 

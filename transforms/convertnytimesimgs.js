@@ -77,8 +77,6 @@ function getInitialStateImages (window, document) {
   console.assert(initialState, `getInitialStateImages initialState not found`);
   if (!initialState) { return imgUrls; }
 
-  // console.log(`  initialStateImages initialState:`, initialState);
-
   // review every property in initalState, looking for image data
   const props = Object.entries(initialState);
   for (let iProp = 0, len = props.length; iProp < len; iProp++) {
@@ -128,19 +126,19 @@ function convertNytimesImgs (document,
   // console.log(`  convertNytimesImgs body:`, body);
 
   // find elements that are or contain images
-  let domImages = findImageContainers(body);
+  let domImageEls = findImageContainers(body);
 
-  subjects = domImages.map(element => {
+  subjects = domImageEls.map(element => {
     return { element };
   });
 
   const initStateSrcUrls = getInitialStateImages(window, document);
 
   console.assert(
-    initStateSrcUrls.length >= domImages.length,
+    initStateSrcUrls.length >= domImageEls.length,
     `convertNytimesImgs too few initialState images found`
   );
-  if (initStateSrcUrls.length < domImages.length) {
+  if (initStateSrcUrls.length < domImageEls.length) {
     return body;
   }
 
@@ -165,10 +163,10 @@ function convertNytimesImgs (document,
     }
   });
 
-  // console.log(`subjects:`);
-  // subjects.forEach(({element, url}) => {
-  //   console.log(`\n  element: ${element.outerHTML}\n  url: ${url}`);
-  // });
+  console.log(`subjects:`);
+  subjects.forEach(({element, url}) => {
+    console.log(`\n  element: ${element.outerHTML}\n  url: ${url}`);
+  });
 
   return body;
 }
