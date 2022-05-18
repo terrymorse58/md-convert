@@ -154,7 +154,8 @@ function getInitialStateImageData (window, document) {
         legacyHtmlCaption
       };
 
-      // find next prop that starts with 'ImageRendition:' - that's our image
+      // find next prop that starts with 'ImageRendition:' - that contains our
+      // image src url
       for (let jProp = iProp + 1; jProp < len; jProp++) {
         const [jpName, jpVal] = props[jProp];
         if (
@@ -173,18 +174,36 @@ function getInitialStateImageData (window, document) {
   return imgData;
 }
 
-// form a hash object of image data with prop names equal to caption text
 /**
- *
- * @param {{imageType, credit, legacyHtmlCaption, url}[]} imgData
- * @return {{}}
+ * @typedef {Object} InitialData
+ * @property {String} imageType
+ * @property {String} credit
+ * @property {String} legacyHtmlCaption
+ * @property {String} url
  */
-function hashImgDataByCaption (imgData) {
-  const hashData = {};
+
+/**
+ * form hashes of inital data consisting of hashByCaption an hashByCredit
+ * @param {InitialData[]} imgData
+ * @return {{hashByCaption: Object, hashByCredit: Object}}
+ */
+function hashInitialData (imgData) {
+  const hashData = {
+      hashByCaption: {},
+      hashByCredit: {}
+    },
+    {hashByCaption, hashByCredit} = hashData;
   imgData.forEach(dataObj => {
-    if (!dataObj.legacyHtmlCaption) { return; }
-    const propName = dataObj.legacyHtmlCaption;
-    hashData[propName] = dataObj;
+    if (dataObj.legacyHtmlCaption) {
+      // hashByCaption: image with caption
+      const propName = dataObj.legacyHtmlCaption;
+      hashByCaption[propName] = dataObj;
+    } else if (dataObj.credit) {
+      // hashByCredit: images with credit but no caption
+      const propName = dataObj.credit;
+      if (!hashByCredit[propName]) {hashByCredit[propName] = [];}
+      hashByCredit[propName].push(dataObj);
+    }
   });
   return hashData;
 }
@@ -229,44 +248,50 @@ function convertNytimesImgs (document,
     return body;
   }
 
-  const imgDataHash = hashImgDataByCaption(initStateImages);
+  // create hashes of image data
+  const {hashByCaption, hashByCredit} = hashInitialData(initStateImages);
 
-  // console.log(`imgDataHash:`, imgDataHash);
+  // console.log(`idHash:`, idHash);
 
   // add urls to subjects
   subjects.forEach((subject, index) => {
-    const {caption} = subject,
-      imgData = caption && imgDataHash[caption];
-    if (imgData) {
-      subject.url = imgData.url;
+    const {caption, credit} = subject,
+      idCaption = caption && hashByCaption[caption],
+      idCredit = credit && hashByCredit[credit];
+
+    if (idCaption) {
+      subject.url = idCaption.url;
+    } else if (idCredit && idCredit.length > 0) {
+      subject.url = idCredit.shift().url;
     }
   });
 
-  // add child img to each lazyload div
-  subjects.forEach(subject => {
+  // append child img to each lazyload div
+  for (const subject of subjects) {
     const {lazyContainer, credit, caption, url} = subject;
+
     if (!url) {
-      console.log(
-`convertNytimesImgs didn't find url for subject: {
-  lazyContainer: ${lazyContainer.outerHTML},
-  credit: '${credit}',
-  caption: '${caption}'
- }`);
-      return;
+      console.log(`
+  convertNytimesImgs didn't find url for subject: {
+    lazyContainer: ${lazyContainer.outerHTML},
+    credit: '${credit}',
+    caption: '${caption}'
+  }`);
+      break;
     }
 
     if (lazyContainer.tagName !== 'DIV') {
       console.error(
         `convertNytimesImgs unknown dom lazyContainer (should be div): ` +
         `${lazyContainer.outerHTML}`);
-      return;
+      break;
     }
 
     // add to lazyload div a child img with src=url
     const img = document.createElement('img');
     img.src = url;
     lazyContainer.appendChild(img);
-  });
+  }
 
   return body;
 }
