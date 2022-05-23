@@ -21,11 +21,13 @@ function findArticleImageContainers (element) {
   // console.log(`findArticleImageContainers element:`, element);
 
   // return when one of these elements is found:
+  //   <div data-qa="lede-art">
   //   <div data-qa="article-image">
   //   <div data-qa="article-image-group">
   if (
     element.tagName === 'DIV' &&
     (
+      element.dataset.qa === 'lede-art' ||
       element.dataset.qa === 'article-image' ||
       element.dataset.qa === 'article-image-group'
     )
@@ -39,7 +41,7 @@ function findArticleImageContainers (element) {
     return [domData];
   }
 
-  // element is not 'article-image' image container, so search element's
+  // element is not an image container, so search element's
   // children
   let imgEls = [];
   const children = [...element.children];
@@ -134,7 +136,7 @@ function convertWashingtonpostImgs (document,
     };
   });
 
-  // {
+  {
   //   console.log(`subjects:`);
   //   let iSub = 0;
   //   for (const sub of subjects) {
@@ -146,7 +148,7 @@ function convertWashingtonpostImgs (document,
   //   containerType: '${containerType}'
   // }`);
   //   }
-  // }
+  }
 
   const scriptImages = getScriptImageData(window, document);
 
@@ -158,7 +160,7 @@ function convertWashingtonpostImgs (document,
     return body;
   }
 
-  // {
+  {
   //   console.log(`scriptImages:`);
   //   let iSImg = 0;
   //   for (const sImg of scriptImages) {
@@ -169,8 +171,19 @@ function convertWashingtonpostImgs (document,
   //   caption: '${caption}'
   // }`);
   //   }
-  // }
+  }
 
+  // remove an element's children (if any)
+  function removeElementChildren (element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  }
+
+  // true if the first scriptImages url is contained in targetStr
+  function stringContainsAScriptImagesUrl (targetStr) {
+      return targetStr.includes(scriptImages[0].url);
+  }
 
   function addImageToContainer(container, url, caption) {
     const img = document.createElement('img'),
@@ -188,22 +201,46 @@ function convertWashingtonpostImgs (document,
   for (const subject of subjects) {
     const {imageContainer, containerType} = subject;
 
-    // remove any existing children
-    while (imageContainer.firstChild) {
-      imageContainer.removeChild(imageContainer.firstChild);
-    }
+    if (containerType === 'lede-art') {
 
-    if (containerType === 'article-image') {
+      // lede art may or may not have an image url in scriptData.
+      // if it doesn't, skip it.
+      // if it does, convert it.
+      const ledeImg = imageContainer.querySelector('figure > div > img');
+      if (!ledeImg) {
+        console.error(`addImageToContainer no no 'lede-art' image found!`);
+        continue;
+      }
+      // see if the image's srcset contains one of the scriptImages urls
+      if (!stringContainsAScriptImagesUrl(ledeImg.srcset)) {
+        // console.log(`addImageToContainer 'lede-art' image not in script images, skipping`);
+        continue;
+      }
+      // image is in scriptImages, convert it
+      // console.log(`addImageToContainer 'lede-art' image in script images, converting`);
+      const {url, caption} = scriptImages.shift();
+      removeElementChildren(imageContainer);
+      addImageToContainer(imageContainer, url, caption);
+
+    } else if (containerType === 'article-image') {
+
       // single image with optional caption
       const {url, caption} = scriptImages.shift();
+      removeElementChildren(imageContainer);
       addImageToContainer(imageContainer, url, caption);
-    } else if (containerType === 'article-image-group') {
-      // two images with optional caption
 
+    } else if (containerType === 'article-image-group') {
+
+      // two images with optional caption
       let img1 = scriptImages.shift(),
         img2 = scriptImages.shift();
+      removeElementChildren(imageContainer);
       addImageToContainer(imageContainer, img1.url, img1.caption);
       addImageToContainer(imageContainer, img2.url, img2.caption);
+
+    } else {
+      console.error(
+        `addImageToContainer unknown containerType '${containerType}'`);
     }
   }
 
