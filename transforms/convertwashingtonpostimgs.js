@@ -118,7 +118,7 @@ function convertWashingtonpostImgs (document,
                                     element = undefined,
                                     conversion = undefined,
                                     window) {
-  console.log('convertWashingtonpostImgs()');
+  // console.log('convertWashingtonpostImgs()');
   let subjects;
 
   const body = document.body;
