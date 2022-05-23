@@ -18,6 +18,9 @@ import {
 import { convertCNNImg } from './transforms/convertcnnimg.js'
 import { convertApnewsImg } from './transforms/convertapnewsimg.js';
 import { convertNytimesImgs } from './transforms/convertnytimesimgs.js';
+import {
+  convertWashingtonpostImgs
+} from './transforms/convertwashingtonpostimgs.js';
 
 
 const transformer = {
@@ -36,7 +39,8 @@ const transformer = {
   changeAnchorWithBlockChild,
   convertCNNImg,
   convertApnewsImg,
-  convertNytimesImgs
+  convertNytimesImgs,
+  convertWashingtonpostImgs
 };
 
 export {

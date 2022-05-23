@@ -1,0 +1,22 @@
+{
+  "description": "test17 - test conversion images in washingtonpost.com page",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [
+    ],
+    "transform": [
+      {
+        "comment": "convert all washingtonpost images",
+        "selector": "body",
+        "conversions": [
+          {
+            "type": "convertWashingtonpostImgs"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}
