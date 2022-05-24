@@ -10,7 +10,8 @@
         "selector": "body",
         "conversions": [
           {
-            "type": "convertWashingtonpostImgs"
+            "type": "convertWashingtonpostImgs",
+            "debug": true
           }
         ]
       }

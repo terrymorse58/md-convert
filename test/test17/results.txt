@@ -1,8 +1,0 @@
-
-> md-convert@0.4.22 test17
-> ./index.js --src test/test17/index.html --config config/config-test17.json
-
-Source file: 'test/test17/index.html'
-Config file: 'config/config-test17.json'
-convertWashingtonpostImgs()
-Saved to test/test17/index.md
