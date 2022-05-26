@@ -1,5 +1,5 @@
 {
-  "description": "test18 - test conversion of Business Intelligence lazy images",
+  "description": "test18 - test conversion of Business Intelligence itemd",
   "htmlMdConfig": {
     "frontMatter": null,
     "omit": [
@@ -12,6 +12,17 @@
         "conversions": [
           {
             "type": "convertBILazyImage",
+            "debug": false
+          }
+        ]
+      },
+      {
+        "comment": "convert timestamp element to readable time",
+        "selector": "div.byline-timestamp",
+        "conversions": [
+          {
+            "type": "convertTimestamp",
+            "timestampAttrName": "data-timestamp",
             "debug": true
           }
         ]
