@@ -86,7 +86,7 @@ function convertBloomberg (
     docBody.appendChild(ul);
     for (const abtext of abstract) {
       const li = document.createElement('li');
-      li.innerHTML = `<h3>${abtext}</h3>`;
+      li.innerHTML = `<h4>${abtext}</h4>`;
       ul.appendChild(li);
     }
   }
