@@ -1,0 +1,23 @@
+{
+  "description": "test18 - test conversion of bloomberg page",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [
+    ],
+    "transform": [
+      {
+        "comment": "convert a single Bloomberg page",
+        "selector": "body",
+        "conversions": [
+          {
+            "type": "convertBloomberg",
+            "debug": true
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}

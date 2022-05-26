@@ -21,6 +21,7 @@ import { convertNytimesImgs } from './transforms/convertnytimesimgs.js';
 import {
   convertWashingtonpostImgs
 } from './transforms/convertwashingtonpostimgs.js';
+import { convertBloomberg } from './transforms/convertbloomberg.js';
 
 
 const transformer = {
@@ -40,7 +41,8 @@ const transformer = {
   convertCNNImg,
   convertApnewsImg,
   convertNytimesImgs,
-  convertWashingtonpostImgs
+  convertWashingtonpostImgs,
+  convertBloomberg
 };
 
 export {
