@@ -1,18 +1,30 @@
 // mdconvert transform 'convertBloomberg' - convert a single Bloomberg page
 
+import { changeInnerHTML } from './changeinnerhtml.js';
+
+/**
+ * extract the text content from a HTML string
+ * @param {HTMLDocument} document
+ * @param {String} htmlStr
+ * @return {String}
+ */
+function getTextContent (document, htmlStr) {
+  const divWrapper = document.createElement('div');
+  divWrapper.innerHTML = htmlStr;
+  return divWrapper.textContent;
+}
+
 /**
  * retrieve the document's script data
  * @param {HTMLDocument} document
  */
 function getScriptData (document) {
-  console.log(`getScripData()`);
+  // console.log(`getScriptData()`);
   let scriptObj = null;
 
   const scriptEl = document.querySelector(
     'script[data-component-props="ArticleBody"]'
   );
-
-  console.log(`  getScriptData scriptEl:`, scriptEl);
 
   if (!scriptEl) {
     console.error(`getScriptData: script not found!`);
@@ -21,7 +33,6 @@ function getScriptData (document) {
 
   try {
     scriptObj = JSON.parse(scriptEl.textContent);
-    console.log(`typeof scriptObj:`, typeof scriptObj);
   } catch (err) {
     console.error(`getScriptData script contents not valid JSON!`);
   }
@@ -42,8 +53,13 @@ function convertBloomberg (
   {debug = false},
   window
 ) {
-  console.log(`convertBloomberg(), debug is ${debug ? 'TRUE' : 'FALSE'}`);
+  // console.log(`convertBloomberg()`);
+
   const docBody = document.body;
+
+  if (debug) {
+    console.log(`convertBloomberg:, debug is ON`);
+  }
 
   // retrieve contents of the script containing the page's data
   const pageData = getScriptData(document);
@@ -55,6 +71,7 @@ function convertBloomberg (
     ledeImageUrl,
     ledeCaption,
     ledeCredit,
+    ledeDescription,
     byline,
     publishedAt,
     updatedAt,
@@ -64,7 +81,7 @@ function convertBloomberg (
   // clear out the current body content
   docBody.innerHTML = '';
 
-  // insert a logo at the top
+  // insert a Bloomberg logo at the top
   const aBloom = document.createElement('a');
   aBloom.href = 'https://www.bloomberg.com';
   docBody.appendChild(aBloom);
@@ -94,29 +111,34 @@ function convertBloomberg (
   if (ledeImageUrl) {
     const img = document.createElement('img');
     img.src = ledeImageUrl;
-    img.alt = ledeCaption || '';
+    img.alt = getTextContent(document, ledeCaption) ||
+      getTextContent(document, ledeDescription) ||
+      getTextContent(document, ledeCredit) ||
+      "Bloomberg article lede image";
     docBody.appendChild(img);
   }
 
   if (ledeCaption || ledeCredit) {
     const blockquote = document.createElement('blockquote');
-    blockquote.textContent = (ledeCaption || '') +
-      (ledeCredit ? (' — ' + ledeCredit) : '');
+    blockquote.textContent = getTextContent(
+      document,
+      (ledeCaption || '') + (ledeCredit ? (' — ' + ledeCredit) : '')
+    );
     docBody.appendChild(blockquote);
   }
 
   if (byline || publishedAt || updatedAt) {
     const p = document.createElement('p');
     let pContent = '';
-    if (byline) { pContent = `By ${byline}`;}
+    if (byline) { pContent = `By ${getTextContent(document, byline)}`;}
     if (publishedAt) {
       const pubDate = new Date(publishedAt);
-      if (pContent) {pContent += `<br>`;}
+      if (pContent) {pContent += `<br>\n`;}
       pContent += `${pubDate.toString()}`;
     }
     if (updatedAt) {
       const updDate = new Date(updatedAt);
-      if (pContent) {pContent += `<br>`;}
+      if (pContent) {pContent += `<br>\n`;}
       pContent += `<i>Updated on ${updDate.toString()}</i>`;
     }
     p.innerHTML = pContent;
@@ -129,32 +151,34 @@ function convertBloomberg (
     docBody.appendChild(wrapper);
   }
 
-  // clear out all <style> elements
-  const styles = [...document.querySelectorAll('style')];
-  for (const style of styles) {
-    style.remove();
-  }
+  // remove all <style> elements
+  document.querySelectorAll('style')
+    .forEach(el => {el.remove();});
 
   // convert all lazy images to static images
-  const lazyImgs = [...document.querySelectorAll('img.lazy-img__image')];
-  for (const img of lazyImgs) {
-    const nativeSrc = img.dataset.nativeSrc;
-    if (!nativeSrc) { continue; }
-    img.src = nativeSrc;
-  }
+  document.querySelectorAll('img.lazy-img__image')
+    .forEach(img => {
+      img.src = img.dataset.nativeSrc || img.src;
+    });
 
   // remove class="trashline" elements
-  const trashEls = [...document.querySelectorAll('.trashline')];
-  for (const el of trashEls) {
-    el.remove();
-  }
+  document.querySelectorAll('.trashline')
+    .forEach(el => {el.remove();});
+
+  // remove all obvious advertising elements
+  document.querySelectorAll('div.page-ad, div.outstream-ad')
+    .forEach(el => { el.remove(); });
 
   // remove figures that are data-image-type="audio"
-  const audioFigures =
-    [...document.querySelectorAll('figure[data-image-type="audio"]')];
-  for (const figure of audioFigures) {
-    figure.remove();
-  }
+  document.querySelectorAll('figure[data-image-type="audio"]')
+    .forEach(el => {el.remove();});
+
+  // convert all '&nbsp;' to spaces
+  changeInnerHTML(document, docBody, {
+    pattern: '&nbsp;',
+    flags: 'gs',
+    newStr: ' '
+  });
 
   // convert figcaptions to blockquotes
   const figcaptions = [...document.querySelectorAll('figcaption')];
@@ -171,7 +195,7 @@ function convertBloomberg (
   }
 
   if (debug) {
-    console.log(`convertBloombert complete, body:`);
+    console.log(`convertBloomberg complete, body:`);
     console.log(docBody.outerHTML);
   }
 

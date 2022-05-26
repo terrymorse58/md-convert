@@ -2,6 +2,7 @@
   "description": "test18 - test conversion of bloomberg page",
   "htmlMdConfig": {
     "frontMatter": null,
+    "comment": "do not omit script, as it's used by convertBloomberg",
     "omit": [
     ],
     "transform": [
