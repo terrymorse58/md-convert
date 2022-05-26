@@ -1,0 +1,24 @@
+{
+  "description": "test18 - test conversion of Business Intelligence lazy images",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [
+      "noscript > img"
+    ],
+    "transform": [
+      {
+        "comment": "convert all Business Intelligence lazy images",
+        "selector": "img[data-srcs]",
+        "conversions": [
+          {
+            "type": "convertBILazyImage",
+            "debug": true
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}

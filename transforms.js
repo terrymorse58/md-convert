@@ -22,6 +22,7 @@ import {
   convertWashingtonpostImgs
 } from './transforms/convertwashingtonpostimgs.js';
 import { convertBloomberg } from './transforms/convertbloomberg.js';
+import { convertBILazyImage } from './transforms/convertbilazyimage.js';
 
 
 const transformer = {
@@ -42,7 +43,8 @@ const transformer = {
   convertApnewsImg,
   convertNytimesImgs,
   convertWashingtonpostImgs,
-  convertBloomberg
+  convertBloomberg,
+  convertBILazyImage
 };
 
 export {
