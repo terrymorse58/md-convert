@@ -1,0 +1,95 @@
+<!-- info for the convertWashingtonpostImgs transformer -->
+
+<!--
+  Structure of a washingtonpost "article-image" container:
+-->
+
+<div data-qa="article-image" class="hide-for-print">
+  <div></div>
+</div>
+
+<!--
+  Structure of a washingtonpost "lede-art" container that contains a VIDEO:
+-->
+
+<div data-qa="lede-art">
+  <div>
+    <div data-testid="video-wrapper">
+      <figure class="...">
+        <div class="..."></div>
+        <figcaption>
+          <figcaption class="..." data-qa="video-caption">
+            THIS_IS_A_VIDEO_CAPTION
+          </figcaption>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</div>
+
+<!--
+  JSON data corresponding to this "lede-art" VIDEO
+-->
+
+<script id="__NEXT_DATA__" type="application/json">
+  {
+    "props": {
+      "pageProps": {
+        "globalContent": {
+          "content_elements": [
+            {
+              "_id": "38666586-d49b-420d-974b-4611a10c46a1",
+              "credits_caption_display": "THIS_IS_A_VIDEO_CAPTION",
+              "promo_image": {
+                "url": "https://.../....jpg"
+              },
+              "type": "video"
+            }
+          ]
+        }
+      }
+    }
+  }
+</script>
+
+<!--
+  Structure of a washingtonpost "lede-art" container that contains an IMAGE:
+ -->
+
+<div data-qa="lede-art" class="">
+  <figure class="...">
+    <div class="...">
+      <img
+        alt="" class="..."
+        srcset="https://www.washingtonpost.com/wp-apps/imrs.php?..."
+        sizes="..."
+        decoding="async">
+    </div>
+    <figcaption class="...">
+      THIS_IS_AN_IAMGE_CAPTION
+    </figcaption>
+  </figure>
+</div>
+
+<!--
+  JSON data corresponding to this "lede-art" IMAGE container:
+-->
+
+<script id="__NEXT_DATA__ " type="application/json">
+  {
+    "props": {
+      "pageProps": {
+        "globalContent": {
+          "content_elements": [
+            {
+              "_id": "DSSKBKFFJYI6ZBRIHWSPVD4HCQ",
+              "credits_caption_display": "THIS_IS_AN_IAMGE_CAPTION",
+              "type": "image",
+              "url": "https://.../...jpg"
+            }
+          ]
+        }
+      }
+    }
+  }
+</script>

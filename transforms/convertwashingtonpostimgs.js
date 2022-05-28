@@ -2,23 +2,17 @@
 //   convert all washingtonpost images using the document's
 //   <script id="__NEXT_DATA__" type="application/json">{...}</script>
 
-/*
-Structure of a washingtonpost "article-image" container:
-
-<div data-qa="article-image" class="hide-for-print">
-  <div></div>
-</div>
-
-
- */
-
 /**
- * depth-first search specified element and its children for image containers
+ * depth-first search specified DOM element and its children for image
+ * containers
  * @param {HTMLElement} element
- * @return {{imageContainer: HTMLElement, containerType: string}[]}
+ * @return {{imageContainer: HTMLElement,
+ *            containerType: string,
+ *            ledeImgType: string,
+ *            caption: string}[]}
  */
-function findArticleImageContainers (element) {
-  // console.log(`findArticleImageContainers element:`, element);
+function findDomImageContainers (element) {
+  // console.log(`findDomImageContainers element:`, element);
 
   // return when one of these elements is found:
   //   <div data-qa="lede-art">
@@ -33,9 +27,44 @@ function findArticleImageContainers (element) {
     )
   ) {
 
+    const imageContainer = element,
+      containerType = element.dataset.qa;
+    let ledeImgType, caption;
+
+    // determine "lede-img" type ('image' or 'video')
+    if (containerType === 'lede-art') {
+      const videoWrapper =
+          imageContainer.querySelector(
+            'div > div[data-testid="video-wrapper"]'),
+        figImg = imageContainer.querySelector('figure > div > img');
+      let figcaption;
+
+      if (videoWrapper) {
+        ledeImgType = 'video';
+        figcaption = videoWrapper.querySelector(
+          'figcaption[data-qa="video-caption"]');
+      } else if (figImg) {
+        ledeImgType = 'image';
+        figcaption = imageContainer.querySelector(
+          'figure > figcaption');
+      } else {
+        console.error(
+          `findDomImageContainers 'lede-art' image type unknown.\n` +
+          `  imageContainer:\n` +
+          `  ${imageContainer.outerHTML}`);
+      }
+
+      if (figcaption) {
+        caption = figcaption.textContent;
+      }
+
+    }
+
     const domData = {
-      imageContainer: element,
-      containerType: element.dataset.qa
+      imageContainer,
+      containerType,
+      ledeImgType,
+      caption
     };
 
     return [domData];
@@ -43,91 +72,113 @@ function findArticleImageContainers (element) {
 
   // element is not an image container, so search element's
   // children
-  let imgEls = [];
+  let imgContainers = [];
   const children = [...element.children];
   for (const child of children) {
-    const childImgs = findArticleImageContainers(child);
+    const childImgs = findDomImageContainers(child);
     if (childImgs.length) {
-      imgEls = imgEls.concat(childImgs);
+      imgContainers = imgContainers.concat(childImgs);
     }
   }
 
-  return imgEls;
+  return imgContainers;
 }
 
 /**
- * recursively find 'content_elements' items where element.type === "image"
- * @param {Object} contentEl
+ * recursively find 'content_elements' items where
+ *      element.type === "image", or
+ *      element.type === "video
+ * @param {Object} contentElItem
  * @param {Set} imgsSet
+ * @param {Set} videosSet
  */
-function findImagesInContentElements(contentEl, imgsSet) {
+function findGraphicItemsInScriptData (
+  contentElItem,
+  imgsSet,
+  videosSet) {
 
-  if (contentEl.type === 'image') {
-    imgsSet.add(contentEl);
+  if (contentElItem.type === 'image') {
+    imgsSet.add(contentElItem);
+  } else if (contentElItem.type === 'video') {
+    videosSet.add(contentElItem);
   }
 
-  const {content_elements} = contentEl;
-  if (!content_elements) {return;}
+  // search for graphic items in this element's content_elements
 
-  // search for image elements in this element's content_elements
+  const {content_elements} = contentElItem;
+  if (!content_elements) {return;}
   for (const childEl of content_elements) {
-    findImagesInContentElements(childEl, imgsSet);
+    findGraphicItemsInScriptData(childEl, imgsSet, videosSet);
   }
 }
 
 /**
- * extract all image data (type: 'image') from the
- * <script id="__NEXT_DATA__>
+ * extract all image data (type: 'image') and video data (type: 'video')
+ * from the <script id="__NEXT_DATA__> script
  * @param {Window} window
  * @param {HTMLDocument} document
- * @return {{url: string, caption: string}[]}
+ * @return {{imgData: {caption: String, url: String}[], videoData: {caption: String, url: String}[]}}
  */
-function getScriptImageData (window, document) {
-  // console.log(`getScriptImageData()`);
+function getScriptDataGraphics (window, document) {
+  // console.log(`getScriptDataGraphics()`);
+  let imgData = [], videoData = [];
 
   // obtain the script element with id="__NEXT_DATA__"
   const scriptEl = document.querySelector('script#__NEXT_DATA__');
 
-  // console.log(`getScriptImageData scriptEl:`, scriptEl);
+  // console.log(`getScriptDataGraphics scriptEl:`, scriptEl);
 
   if (!scriptEl) {
-    console.error(`getScriptImageData no script found!`);
-    return imgData;
+    console.error(`getScriptDataGraphics no script found!`);
+    return {imgData, videoData};
   }
 
   let scriptObject;
   try {
     scriptObject = JSON.parse(scriptEl.textContent);
   } catch (err) {
-    console.error(`getScriptImageData invalid JSON:`, err);
-    return imgData;
+    console.error(`getScriptDataGraphics invalid JSON:`, err);
+    return {imgData, videoData};
   }
 
   const {content_elements} = scriptObject?.props?.pageProps?.globalContent;
   if (!content_elements) {
-    console.error(`getScriptImageData property 'content_elements' not` +
+    console.error(`getScriptDataGraphics property 'content_elements' not` +
       ` found`);
-    return imgData;
+    return {imgData, videoData};
   }
 
   // form set of all content elements where type == 'image'
-  const imagesSet = new Set();
-  for (const contentEl of content_elements) {
-    findImagesInContentElements(contentEl, imagesSet);
+  const imagesSet = new Set(),
+    videosSet = new Set();
+  for (const contentElItem of content_elements) {
+    findGraphicItemsInScriptData(contentElItem, imagesSet, videosSet);
   }
 
   // form imageData from set of content images
-  const imgData = [...imagesSet].map(cEl => {
+  imgData = [...imagesSet].map(cEl => {
     const {url, credits_caption_display} = cEl;
     return {
       caption: credits_caption_display,
       url
-    }
+    };
   });
 
-  return imgData;
-}
+  // form video data from set of content videos
+  videoData = [...videosSet].map(cItem => {
+    const {credits_caption_display, promo_image} = cItem,
+      {url} = promo_image;
+    return {
+      caption: credits_caption_display,
+      url
+    };
+  });
 
+  return {
+    imgData,
+    videoData
+  };
+}
 
 /**
  * remove an element's children (if any)
@@ -140,13 +191,13 @@ function removeElementChildren (element) {
 }
 
 /**
- * true if the first scriptImages url is contained in targetStr
+ * true if the first imgData url is contained in targetStr
  * @param {String} targetStr
- * @param {{url: string}[]} scriptImages
+ * @param {{url: string}[]} imgData
  * @return {Boolean}
  */
-function stringContainsAScriptImagesUrl (targetStr, scriptImages) {
-  return targetStr.includes(scriptImages[0].url);
+function stringContainsImageDataUrl (targetStr, imgData) {
+  return targetStr.includes(imgData[0].url);
 }
 
 /**
@@ -156,7 +207,7 @@ function stringContainsAScriptImagesUrl (targetStr, scriptImages) {
  * @param {string} url
  * @param {string} caption
  */
-function addImageToContainer (
+function addImageWithCaptionToContainer (
   document,
   container,
   url,
@@ -194,119 +245,167 @@ function convertWashingtonpostImgs (document,
 
   // find HTML elements that may contain images
 
-  let imgContainers = findArticleImageContainers(body);
+  let imgContainers = findDomImageContainers(body);
 
-  const htmlSubjects = imgContainers.map(cont => {
-    const {imageContainer, containerType} = cont;
+  const domSubjects = imgContainers.map(cont => {
+    const {imageContainer, containerType, ledeImgType, caption} = cont;
     return {
       imageContainer,
-      containerType
+      containerType,
+      ledeImgType,
+      caption,
+      url: undefined
     };
   });
 
   if (debug) {
-    console.log(`  convertWashingtonpostImgs htmlSubjects:`);
+    console.log(`  convertWashingtonpostImgs domSubjects:`);
     let iSub = 0;
-    for (const sub of htmlSubjects) {
-      const {imageContainer, containerType} = sub;
+    for (const sub of domSubjects) {
+      const {imageContainer, containerType, ledeImgType, caption} = sub;
       console.log(
-        `  [${iSub++}]: {
-    imageContainer:
-      ${imageContainer.outerHTML},
-    containerType: '${containerType}'
-  }`);
+        `  [${iSub++}]: {\n` +
+        `    imageContainer:\n` +
+        `      ${imageContainer.outerHTML},\n` +
+        `    containerType: '${containerType}',\n` +
+        `    ledeImgType: '${ledeImgType}',\n` +
+        `    caption: '${caption}'\n` +
+        `  }`);
     }
   }
 
-  // find image data in script
+  // find graphic items in the
+  //    <script id="__NEXT_DATA__" type="application/json">
 
-  const scriptImages = getScriptImageData(window, document);
+  const {imgData, videoData} = getScriptDataGraphics(window, document);
 
   if (debug) {
-    console.log(`  convertWashingtonpostImgs scriptImages:`);
+    console.log(`\n  convertWashingtonpostImgs imgData:`);
     let iSImg = 0;
-    for (const sImg of scriptImages) {
+    for (const sImg of imgData) {
       const {url, caption} = sImg;
       console.log(
-        `  [${iSImg++}]: {
-      url: '${url}',
-      caption: '${caption}'
-    }`);
+        `  [${iSImg++}]: {\n` +
+        `    url: '${url}',\n` +
+        `    caption: '${caption}'\n` +
+        `  }`);
+    }
+    console.log(`\n  videoData:`);
+    let iVid = 0;
+    for (const vid of videoData) {
+      const {url, caption} = vid;
+      console.log(
+        `  [${iVid++}]: {\n` +
+        `    url: '${url}',\n` +
+        `    caption: '${caption}'\n` +
+        `  }`);
     }
   }
 
-  if (scriptImages.length < imgContainers.length) {
-    console.error(
-      `convertWashingtonpostImgs image count mismatch:
-      scriptImages.length:  ${scriptImages.length}
-      imgContainers.length: ${imgContainers.length}
-      SKIPPING IMAGE CONVERSION!`);
-    return body;
-  }
+  // if (imgData.length < imgContainers.length) {
+  //   console.error(
+  //     `convertWashingtonpostImgs image count mismatch:
+  //     imgData.length:  ${imgData.length}
+  //     imgContainers.length: ${imgContainers.length}
+  //     SKIPPING IMAGE CONVERSION!`);
+  //   return body;
+  // }
 
   // insert images + captions into htmlSubject elements
 
-  for (const subject of htmlSubjects) {
-    const {imageContainer, containerType} = subject;
+  for (const subject of domSubjects) {
+    const {imageContainer, containerType, ledeImgType, caption} = subject;
 
-    if (containerType === 'lede-art') {
+    if (containerType === 'lede-art' && ledeImgType === 'image') {
 
-      // TERRY lede-art may contain a video instead of an image
-      // which we could possibly convert to an image
-
-      // lede art may or may not have an image url in scriptData.
-      // if it doesn't, skip it.
-      // if it does, convert it.
+      // 'lede-art' 'image' container must have an `img` element:
       const ledeImg = imageContainer.querySelector('figure > div > img');
       if (!ledeImg) {
         continue;
       }
 
-      // see if the image's srcset contains one of the scriptImages urls
-      if (!stringContainsAScriptImagesUrl(ledeImg.srcset, scriptImages)) {
-        // console.log(`addImageToContainer 'lede-art' image not in script images, skipping`);
-        continue;
+      let srcUrl, newCaption;
+      if (!stringContainsImageDataUrl(ledeImg.srcset, imgData)) {
+        
+        // lede-art image is not in imgData, get url from image's srcset
+        const urls = ledeImg.srcset.match(/^(.*?)(\.jpg|\.jpeg|\.png)/);
+        srcUrl = urls[0];
+        newCaption = caption;
+
+      } else {
+
+        // image is in imgData, get url and caption from imgData
+        const {url, caption} = imgData.shift();
+        srcUrl = url;
+        newCaption = caption;
       }
 
-      // image is in scriptImages, convert it
-      // console.log(`addImageToContainer 'lede-art' image in script images, converting`);
-      const {url, caption} = scriptImages.shift();
       removeElementChildren(imageContainer);
-      addImageToContainer(document, imageContainer, url, caption);
+      addImageWithCaptionToContainer(document, imageContainer, srcUrl,
+        newCaption);
+
+    } else if (containerType === 'lede-art' && ledeImgType === 'video') {
+
+      // find the video data with a matching caption
+      let vdUrl;
+      for (let iVData = 0, len = videoData.length; iVData < len; iVData++) {
+        const vData = videoData[iVData];
+        if (vData.caption === caption) {
+          vdUrl = vData.url;
+          videoData.splice(iVData, 1);
+          break;
+        }
+      }
+      
+      if (vdUrl) {
+        removeElementChildren(imageContainer);
+        addImageWithCaptionToContainer(
+          document, imageContainer, vdUrl, caption);
+      } else {
+        console.error(
+          `convertWashingtonpostImgs no video URL found, subject:`, subject);
+      }
 
     } else if (containerType === 'article-image') {
 
       // single image with optional caption
-      const {url, caption} = scriptImages.shift();
+      const id = imgData.shift();
       removeElementChildren(imageContainer);
-      addImageToContainer(document, imageContainer, url, caption);
+      addImageWithCaptionToContainer(document, imageContainer, id.url,
+        id.caption);
 
     } else if (containerType === 'article-image-group') {
 
       // two images with optional caption
-      let img1 = scriptImages.shift(),
-        img2 = scriptImages.shift();
+      let img1 = imgData.shift(),
+        img2 = imgData.shift();
       removeElementChildren(imageContainer);
-      addImageToContainer(document, imageContainer, img1.url, img1.caption);
-      addImageToContainer(document, imageContainer, img2.url, img2.caption);
+      addImageWithCaptionToContainer(
+        document, imageContainer, img1.url, img1.caption);
+      addImageWithCaptionToContainer(
+        document, imageContainer, img2.url, img2.caption);
 
     } else {
       console.error(
-        `addImageToContainer unknown containerType '${containerType}'`);
+        `addImageWithCaptionToContainer unknown containerType:` +
+        `'${containerType}'`);
     }
+    
   }
-
+  
   if (debug) {
-    console.log(`  convertWashingtonpostImgs htmlSubjects after conversion:`);
+    console.log(`\n  convertWashingtonpostImgs domSubjects after conversion:`);
     let iSub = 0;
-    for (const sub of htmlSubjects) {
-      const {imageContainer, containerType} = sub;
+    for (const sub of domSubjects) {
+      const {imageContainer, containerType, ledeImgType, caption} = sub;
       console.log(
-        `  [${iSub++}]: {
-      imageContainer:
-        ${imageContainer.outerHTML},
-      containerType: '${containerType}'
-    }`);
+        `  [${iSub++}]: {\n` +
+        `    imageContainer:\n` +
+        `      ${imageContainer.outerHTML},\n` +
+        `    containerType: '${containerType}',\n` +
+        `    ledeImgType: '${ledeImgType}',\n` +
+        `    caption: '${caption}'\n` +
+        `  }`);
     }
   }
 
