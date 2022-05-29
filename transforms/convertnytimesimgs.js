@@ -27,10 +27,14 @@ Structure of a nytimes lazy image container:
 /**
  * depth-first search specified element and its children for image containers
  * @param {HTMLElement} element
+ * @param {Boolean} [debug]
  * @return {{lazyContainer: HTMLElement, credit: string, caption: string}[]}
  */
-function findLazyImageContainers (element) {
-  // console.log(`findLazyImageContainers element:`, element);
+function findLazyImageContainers (element, debug = false) {
+
+  if (debug) {
+    // console.log(`findLazyImageContainers element:`, element);
+  }
 
   // return when <div data-testid="lazyimage-container"> is found
   if (
@@ -107,9 +111,14 @@ function looseJsonParse (objStr) {
  * extract all the image data from the initialState data
  * @param {Window} window
  * @param {HTMLDocument} document
+ * @param {Boolean} [debug]
  * @return {{imageType, credit, legacyHtmlCaption, url}[]}
  */
-function getInitialStateImageData (window, document) {
+function getInitialStateImageData (
+  window,
+  document,
+  debug = false
+) {
   // console.log(`initialStateImages()`);
   let imgData = [], preloadObjectStr;
 
@@ -121,7 +130,11 @@ function getInitialStateImageData (window, document) {
       // trim the script down to the object contents
       preloadObjectStr = preloadScript.replace('window.__preloadedData = {', '{')
         .replace(/(.*);/gs, '$1');
-      // console.log(`  initialStateImages: found preloadScript`);
+
+      if (debug) {
+        console.log(`  initialStateImages: found window.__preloadedData`);
+      }
+
       break;
     }
   }
@@ -133,7 +146,8 @@ function getInitialStateImageData (window, document) {
   const preloadData = looseJsonParse(preloadObjectStr);
   const {initialState} = preloadData;
 
-  console.assert(initialState, `getInitialStateImageData initialState not found`);
+  console.assert(initialState,
+    `getInitialStateImageData window.__preloadedData.initialState not found`);
   if (!initialState) { return imgData; }
 
   // evaluate every property in initalState, looking for image data
@@ -212,22 +226,23 @@ function hashInitialData (imgData) {
  * convert nytimes images
  * @param {HTMLDocument} document
  * @param {undefined} [element]
- * @param {undefined} [conversion]
+ * @param {Boolean} [debug]
  * @param {Window} window
  * @return {*|string|string|HTMLElement|BodyInit|ReadableStream<Uint8Array>|null}
  */
 function convertNytimesImgs (document,
                              element = undefined,
-                             conversion = undefined,
+                             {debug = false},
                              window) {
-  console.log('convertNytimesImgs()');
+  if (debug) {
+    console.log('convertNytimesImgs()');
+  }
   let subjects;
 
   const body = document.body;
-  // console.log(`  convertNytimesImgs body:`, body);
 
-  // find elements that are or contain images
-  let lazyContainers = findLazyImageContainers(body);
+  // find elements that are or contain lazy images
+  let lazyContainers = findLazyImageContainers(body, debug);
 
   subjects = lazyContainers.map(cont => {
     const {lazyContainer, credit, caption} = cont;
@@ -238,13 +253,34 @@ function convertNytimesImgs (document,
     };
   });
 
-  const initStateImages = getInitialStateImageData(window, document);
+  if (debug) {
+    console.log(`\nsubjects:`);
+    let iSub = 0;
+    for (const {lazyContainer, caption, credit} of subjects) {
+      console.log(
+        `  [${iSub++}]:\n` +
+        `    lazyContainer: ${lazyContainer.outerHTML},\n` +
+        `    caption: '${caption}',\n` +
+        `    credit: '${credit}'`
+      );
+    }
+    if (iSub === 0) {
+      console.log(`   No subjects found.`);
+    }
+  }
+
+  // skip processing if no subjects found
+  if (!subjects || subjects.length === 0) {
+    return body;
+  }
+
+  const initStateImages = getInitialStateImageData(window, document, debug);
 
   console.assert(
-    initStateImages.length >= lazyContainers.length,
+    initStateImages.length >= subjects.length,
     `convertNytimesImgs too few initialState images found`
   );
-  if (initStateImages.length < lazyContainers.length) {
+  if (initStateImages.length < subjects.length) {
     return body;
   }
 

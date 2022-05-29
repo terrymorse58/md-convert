@@ -1,6 +1,6 @@
 {
   "name": "md-convert",
-  "version": "0.4.32",
+  "version": "0.4.33",
   "description": "convert HTML file to markdown",
   "main": "mdconvert.js",
   "type": "module",
@@ -28,7 +28,8 @@
     "test16": "./index.js --src test/test16/index.html --config config/config-test16.json",
     "test17": "./index.js --src test/test17/index.html --config config/config-test17.json",
     "test18": "./index.js --src test/test18/index.html --config config/config-test18.json",
-    "test19": "./index.js --src test/test19/index.html --config config/config-test19.json"
+    "test19": "./index.js --src test/test19/index.html --config config/config-test19.json",
+    "test20": "./index.js --src test/test20/index.html --config config/config-test20.json"
   },
   "author": "Terry Morse",
   "license": "UNLICENSED",

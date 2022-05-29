@@ -24,6 +24,7 @@ import {
 import { convertBloomberg } from './transforms/convertbloomberg.js';
 import { convertBILazyImage } from './transforms/convertbilazyimage.js';
 import { convertTimestamp } from './transforms/converttimestamp.js';
+import { convertPicture } from './transforms/convertpicture.js';
 
 
 const transformer = {
@@ -46,7 +47,8 @@ const transformer = {
   convertWashingtonpostImgs,
   convertBloomberg,
   convertBILazyImage,
-  convertTimestamp
+  convertTimestamp,
+  convertPicture
 };
 
 export {
