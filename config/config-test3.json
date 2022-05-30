@@ -1,5 +1,5 @@
 {
-  "description": "Markdown conversion test for changeNoscript test",
+  "description": "Markdown conversion test for convertImgSrcset test",
   "htmlMdConfig": {
     "frontMatter": {
       "title": {
@@ -12,7 +12,8 @@
         "selector": "img:not([src])",
         "conversions": [
           {
-            "type": "convertImgSrcset"
+            "type": "convertImgSrcset",
+            "debug": true
           }
         ]
       }
