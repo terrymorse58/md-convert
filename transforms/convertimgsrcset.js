@@ -65,12 +65,13 @@ function convertImgSrcset (
 
   let maxSize = 0;
   const bestCandidate = candidateSrcs.reduce((best, candidate) => {
+    let newBest = best || candidate;
     const sizeDecimal = parseInt(candidate.size);
     if (sizeDecimal > maxSize) {
       maxSize = sizeDecimal;
-      best = candidate;
+      newBest = candidate;
     }
-    return best;
+    return newBest;
   }, {});
 
   if (debug) {
