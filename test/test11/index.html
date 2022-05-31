@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test of changeAnchorWithBlockChild</title>
+</head>
+<body>
+<h1>Test of changeAnchorWithBlockChild</h1>
+
+<h4>An anchor with block child:</h4>
+<div>
+  <div>
+    <a
+      href="https://www.nytimes.com/interactive/2022/world/europe/ukraine-maps.html">
+      <div>
+        <img
+          alt="a > div > img"
+          src="https://static01.nyt.com/images/2022/02/25/us/ukraine-maps-promo-1645801007862/ukraine-maps-promo-1645801007862-articleLarge-v61.jpg">
+      </div>
+      <div>
+        <h2>Here's a > div > h2</h2>
+        <p>Here’s a > div > p</p>
+      </div>
+    </a></div>
+</div>
+
+<h4>Anchor with no block child:</h4>
+<div>
+  <a href="about:blank#something"><span>a span</span><strong> and a
+    strong</strong><br>
+    And an image <img src="https://picsum.photos/60/30"/>
+  </a>
+</div>
+
+</body>
+</html>

@@ -1,48 +1,91 @@
-// mdconvert transform 'changeAnchorWithBlockChild' - change anchor that contains
-// at least one block element to a span
+// mdconvert transform 'changeAnchorWithBlockChild' - convert anchor to a span
+// if it contains at least one block element
 
-// all 'display: inline' elements
-const inlineEls = new Set(['ABBR', 'ACRONYM', 'B', 'BR', 'EM', 'I',
-  'IMG', 'NOSCRIPT', 'PICTURE', 'S', 'SMALL', 'SPAN', 'STRONG', 'SUB',
-  'SUP', 'TIME', 'U', 'TT']);
+// 'display: block' elements (copied from turndown package)
+const blockElements = [
+  'ADDRESS', 'ARTICLE', 'ASIDE', 'AUDIO', 'BLOCKQUOTE', 'BODY', 'CANVAS',
+  'CENTER', 'DD', 'DIR', 'DIV', 'DL', 'DT', 'FIELDSET', 'FIGCAPTION', 'FIGURE',
+  'FOOTER', 'FORM', 'FRAMESET', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HEADER',
+  'HGROUP', 'HR', 'HTML', 'ISINDEX', 'LI', 'MAIN', 'MENU', 'NAV', 'NOFRAMES',
+  'NOSCRIPT', 'OL', 'OUTPUT', 'P', 'PRE', 'SECTION', 'TABLE', 'TBODY', 'TD',
+  'TFOOT', 'TH', 'THEAD', 'TR', 'UL'
+];
 
 /**
- * change anchor to span if it has a block child element
- * @param {HTMLDocument} document
+ * true if tag name is a 'display: block' element
  * @param {HTMLElement} element
+ * @return {Boolean}
+ */
+function isBlockElement (element) {
+  const {tagName} = element;
+  return blockElements.includes(tagName);
+}
+
+/**
+ * true if element contains a 'display: block' element
+ * @param {HTMLElement} element
+ * @return {boolean}
+ */
+function elementContainsBlockElement (element) {
+  for (const child of [...element.children]) {
+    if (isBlockElement(child)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * change anchor to span if it contains a child block element
+ * @param {HTMLDocument} document
+ * @param {HTMLAnchorElement} element
+ * @param {boolean} [debug]
  */
 function changeAnchorWithBlockChild (
   document,
-  element
+  element,
+  {debug = false}
 ) {
-  // console.log('changeAnchorWithBlockChild()');
-
-  /** @type HTMLAnchorElement **/
-  const a = element,
-    tagName = a.tagName;
-  let containsBlockElement = false;
-
-  console.assert(tagName === 'A', `changeAnchorWithBlockChild invalid element`);
-
-  if (tagName !== 'A') { return element; }
-
-  // search for block element in children
-  for (const child of [...a.children]) {
-    if (!inlineEls.has(child.tagName)) {
-      containsBlockElement = true;
-      break;
-    }
+  if (debug) {
+    console.log('\nchangeAnchorWithBlockChild()');
+    console.log(`  changeAnchorWithBlockChild element:\n` +
+      `${element.outerHTML}`);
   }
 
-  if (!containsBlockElement) {
+  const {tagName} = element;
+
+
+  if (tagName !== 'A') {
+    console.error(
+      `ERROR changeAnchorWithBlockChild element not anchor: ` +
+      `${element.outerHTML}`
+    );
     return element;
   }
 
-  // anchor contains block element, convert anchor to span
-  const newSpan = document.createElement('span');
-  newSpan.innerHTML = a.innerHTML;
-  a.replaceWith(newSpan);
-  return newSpan;
+  // search for block element in children
+  if (elementContainsBlockElement(element)) {
+    if (debug) {
+      console.log(`  changeAnchorWithBlockChild element contains block`);
+    }
+    // anchor contains at least one block element, convert anchor to span
+    const newSpan = document.createElement('span');
+    newSpan.innerHTML = element.innerHTML;
+    element.replaceWith(newSpan);
+
+    if (debug) {
+      console.log(`  changeAnchorWithBlockChild newSpan:\n` +
+        `${newSpan.outerHTML}`);
+    }
+
+    return newSpan;
+  }
+
+  if (debug) {
+    console.log(`  changeAnchorWithBlockChild: no changes.`)
+  }
+
+  return element;
 }
 
 export { changeAnchorWithBlockChild };

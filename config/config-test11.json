@@ -1,5 +1,5 @@
 {
-  "description": "conversion test for changeVideoPosterToImg",
+  "description": "conversion test for changeAnchorWithBlockChild",
   "htmlMdConfig": {
     "frontMatter": null,
     "omit": [],
@@ -9,7 +9,8 @@
         "selector": "a",
         "conversions": [
           {
-            "type": "changeAnchorWithBlockChild"
+            "type": "changeAnchorWithBlockChild",
+            "debug": true
           }
         ]
       }

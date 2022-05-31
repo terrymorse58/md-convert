@@ -47,6 +47,12 @@ function convertPicture (
     return picture;
   }
 
+  // if img src is missing, try getting it from img data-src
+  if (!img.src && img.dataset.src) {
+    img.src = img.dataset.src;
+    img.removeAttribute('data-src');
+  }
+
   // replace picture with contained image
   picture.replaceWith(img);
 
