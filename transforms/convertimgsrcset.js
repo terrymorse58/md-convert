@@ -22,6 +22,13 @@
   data-sizes="auto"
   data-src="https://www.mercurynews.com/wp-content/uploads/2022/05/SJM-Z-TEXFOLO-0526.jpg?w=498"
   data-srcset="https://www.mercurynews.com/wp-content/uploads/2022/05/SJM-Z-TEXFOLO-0526.jpg?w=498 620w,https://www.mercurynews.com/wp-content/uploads/2022/05/SJM-Z-TEXFOLO-0526.jpg?w=627 780w,https://www.mercurynews.com/wp-content/uploads/2022/05/SJM-Z-TEXFOLO-0526.jpg?w=819 1020w,https://www.mercurynews.com/wp-content/uploads/2022/05/SJM-Z-TEXFOLO-0526.jpg?w=1025 1280w,https://www.mercurynews.com/wp-content/uploads/2022/05/SJM-Z-TEXFOLO-0526.jpg?w=1489 1860w">
+
+  example img with `data-srcset` that has url but no size:
+
+<img
+  data-srcset="https://s.hdnux.com/photos/01/23/65/40/21977091/3/ratio3x2_425.jpg"
+  alt="Dish Bo NŽ, filet mignon with eggs and bread a speciality of Bo Ne Phu Yen is photographed in the food court in the Lion Plaza on Friday, Jan. 28, 2022, in East San Jose, Calif. (Special to The Chronicle/ Josie Lepe)">
+
  */
 
 
@@ -44,7 +51,9 @@ function convertImgSrcset (
       `${element.outerHTML}`);
   }
 
-  const srcset = element.srcset || element.dataset.srcset;
+  const srcset = element.srcset ||
+    element.dataset.srcset ||
+    element.dataset.src;
   
   if (!srcset) {
     console.error(`ERROR convertImgSrcset srcset and data-srcset missing: ` +
@@ -65,14 +74,24 @@ function convertImgSrcset (
 
   let maxSize = 0;
   const bestCandidate = candidateSrcs.reduce((best, candidate) => {
+
+    if (debug) {
+      console.log(`    convertImgSrcset candidate:`, candidate);
+    }
+
     let newBest = best || candidate;
     const sizeDecimal = parseInt(candidate.size);
     if (sizeDecimal > maxSize) {
       maxSize = sizeDecimal;
       newBest = candidate;
     }
+
+    if (debug) {
+      console.log(`    convertImgSrcset newBest:`, newBest);
+    }
+
     return newBest;
-  }, {});
+  }, null);
 
   if (debug) {
     console.log(`  convertImgSrcset bestCandidate:`, bestCandidate);
