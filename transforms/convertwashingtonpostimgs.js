@@ -197,9 +197,10 @@ function removeElementChildren (element) {
  * @return {Boolean}
  */
 function stringContainsImageDataUrl (targetStr, imgData) {
+  if (!imgData || !imgData[0]) { return false; }
   const {url} = imgData[0];
-  if (!url || !targetStr) { return false; }
-  return targetStr.includes(imgData[0].url);
+  if (!url) { return false; }
+  return targetStr.includes(url);
 }
 
 /**
