@@ -197,6 +197,8 @@ function removeElementChildren (element) {
  * @return {Boolean}
  */
 function stringContainsImageDataUrl (targetStr, imgData) {
+  const {url} = imgData[0];
+  if (!url || !targetStr) { return false; }
   return targetStr.includes(imgData[0].url);
 }
 
@@ -254,7 +256,7 @@ function convertWashingtonpostImgs (document,
       containerType,
       ledeImgType,
       caption,
-      url: undefined
+      url: ""
     };
   });
 
