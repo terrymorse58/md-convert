@@ -47,6 +47,11 @@ function convertPicture (
     return picture;
   }
 
+  // remove any src that begins with `data:`
+  if (img.src.startsWith('data:')) {
+    img.src = "";
+  }
+
   // if img src is missing, try getting it from img data-src
   if (!img.src && img.dataset.src) {
     img.src = img.dataset.src;
