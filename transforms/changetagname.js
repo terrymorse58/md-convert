@@ -5,22 +5,33 @@
  * @param {HTMLDocument} document
  * @param {HTMLElement} element
  * @param {String} tagName
+ * @param {Boolean} debug
  * @returns {HTMLElement}
  */
 function changeTagName (
   document,
   element,
-  { tagName}
+  { tagName, debug}
 ) {
-  // console.log('changeTagName()');
 
-  console.assert(tagName, `changeTagName invalid tagName`);
+  if (debug) {
+    console.log('changeTagName()');
+    console.log(`  changeTagName element: ${element.outerHTML}`);
+  }
 
-  if (!tagName) { return element; }
+  if (!tagName) {
+    console.error(`changeTagName invalid tagName '${tagName}'`);
+    return element;
+  }
 
   const newEl = document.createElement(tagName);
   newEl.innerHTML = element.innerHTML;
   element.replaceWith(newEl);
+
+  if (debug) {
+    console.log(`  changeTagName newEl: ${newEl.outerHTML}`);
+  }
+
   return newEl;
 }
 
