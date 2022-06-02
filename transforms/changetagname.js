@@ -26,6 +26,12 @@ function changeTagName (
 
   const newEl = document.createElement(tagName);
   newEl.innerHTML = element.innerHTML;
+
+  // copy the element attributes, also
+  [...element.attributes].forEach(({name, value}) => {
+    newEl.setAttribute(name, value);
+  });
+
   element.replaceWith(newEl);
 
   if (debug) {
