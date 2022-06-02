@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test of convertImgSrcset</title>
+  <title>test3 - Test of convertImgSrcset</title>
 </head>
 <body>
 
@@ -29,6 +29,14 @@
     data-srcset="https://s.hdnux.com/photos/01/23/65/40/21977091/3/ratio3x2_425.jpg"
     alt="Dish Bo NŽ, filet mignon with eggs and bread a speciality of Bo Ne Phu Yen is photographed in the food court in the Lion Plaza on Friday, Jan. 28, 2022, in East San Jose, Calif. (Special to The Chronicle/ Josie Lepe)">
 
+
+  <p>Image with no src and srcset that has extra whitespace:</p>
+  <img height="173" width="307" layout="responsive" srcset="
+                                                                          https://cdn.cnn.com/cnnnext/dam/assets/220531121330-paxlovid-prescriptions-restricted-medium-plus-169.jpg 307w,
+                                                                                          https://cdn.cnn.com/cnnnext/dam/assets/220531121330-paxlovid-prescriptions-restricted-large-169.jpg 460w,
+                                                                                          https://cdn.cnn.com/cnnnext/dam/assets/220531121330-paxlovid-prescriptions-restricted-exlarge-169.jpg 780w,
+                                                                                          https://cdn.cnn.com/cnnnext/dam/assets/220531121330-paxlovid-prescriptions-restricted-super-169.jpg 1100w,
+                                                                        " alt="Paxlovid is widely available, but details on who&amp;apos;s getting it are sparse">
 </div>
 </body>
 </html>

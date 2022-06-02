@@ -51,7 +51,7 @@ function convertImgSrcset (
       `${element.outerHTML}`);
   }
 
-  const srcset = element.srcset ||
+  let srcset = element.srcset ||
     element.dataset.srcset ||
     element.dataset.src;
   
@@ -60,12 +60,22 @@ function convertImgSrcset (
     `${element.outerHTML}`);
     return element;
   }
+
+  // scrub srcset of newlines
+  srcset = srcset.replace(/\r?\n|\r/g, ' ');
+
+  if (debug) {
+    console.log(`  convertImgSrcset cleaned srcset: '${srcset}'`);
+  }
   
   const candidateSrcs = srcset.split(",")
     .reduce((acc, str) => {
-      const [url, size] = str.split(" ");
-      acc.push({url, size});
+
+      const strTrimmed = str.trim();
+      const [url, size] = strTrimmed.split(" ");
+      if (url?.length) { acc.push({url, size}); }
       return acc;
+
     }, []);
 
   if (debug) {
@@ -75,27 +85,15 @@ function convertImgSrcset (
   let maxSize = 0;
   const bestCandidate = candidateSrcs.reduce((best, candidate) => {
 
-    if (debug) {
-      console.log(`    convertImgSrcset candidate:`, candidate);
-    }
-
     let newBest = best || candidate;
     const sizeDecimal = parseInt(candidate.size);
     if (sizeDecimal > maxSize) {
       maxSize = sizeDecimal;
       newBest = candidate;
     }
-
-    if (debug) {
-      console.log(`    convertImgSrcset newBest:`, newBest);
-    }
-
     return newBest;
-  }, null);
 
-  if (debug) {
-    console.log(`  convertImgSrcset bestCandidate:`, bestCandidate);
-  }
+  }, null);
 
   if (bestCandidate.url) {
     element.src = bestCandidate.url;
