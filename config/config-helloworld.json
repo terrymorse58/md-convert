@@ -40,7 +40,8 @@
             "type": "changeInnerHTML",
             "comment": "change innerHTML to something else",
             "pattern": "^.*",
-            "newStr": "<strong>'div.example changed to 'p', then made STRONG</strong>"
+            "newStr": "<strong>'div.example changed to 'p', then made STRONG</strong>",
+            "debug": true
           },
           {
             "type": "insertAfter",

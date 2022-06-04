@@ -5,14 +5,19 @@
  * @param {HTMLDocument} document
  * @param {HTMLElement} element
  * @param {String} htmlStr
+ * @param {Boolean} debug
  * @returns {HTMLElement}
  */
 function insertBefore (
   document,
   element,
-  { htmlStr}
+  { htmlStr, debug = false}
 ) {
-  // console.log('insertBefore()');
+
+  if (debug) {
+    console.log('insertBefore()');
+    console.log(`  insertBefore element: ${element.outerHTML}`);
+  }
 
   console.assert(typeof htmlStr === 'string',
     'insertBefore: invalid htmlStr');

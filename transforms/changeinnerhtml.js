@@ -7,6 +7,7 @@
  * @param {String} pattern
  * @param {String} flags
  * @param {String} newStr
+ * @param {Boolean} [debug]
  * @returns {HTMLElement}
  */
 function changeInnerHTML (
@@ -15,10 +16,15 @@ function changeInnerHTML (
   {
     pattern,
     flags,
-    newStr
+    newStr,
+    debug = false
   }
 ) {
-  // console.log('changeInnerHTML()');
+
+  if (debug) {
+    console.log('changeInnerHTML()');
+    console.log(`  changeInnerHTML element: ${element.outerHTML}`);
+  }
 
   console.assert(Boolean(pattern), `changeInnerHTML invalid pattern`);
   console.assert(typeof newStr === 'string',
@@ -29,6 +35,10 @@ function changeInnerHTML (
   let content = element.innerHTML;
   const regex = new RegExp(pattern, flags);
   element.innerHTML = content.replace(regex, newStr);
+
+  if (debug) {
+    console.log(`  changeInnerHTML complete, element: ${element.outerHTML}`);
+  }
   return element;
 }
 
