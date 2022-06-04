@@ -155,6 +155,10 @@ function convertBloomberg (
   document.querySelectorAll('style')
     .forEach(el => {el.remove();});
 
+  // remove all <aside> elements
+  document.querySelectorAll('aside')
+    .forEach(el => {el.remove();});
+
   // convert all lazy images to static images
   document.querySelectorAll('img.lazy-img__image')
     .forEach(img => {
@@ -194,10 +198,57 @@ function convertBloomberg (
     figcaption.replaceWith(blockquote);
   }
 
+  // convert <div class="chart">
+/*
+  sample:
+      <div class="chart" data-responsive="true">
+        <div class="chart-js">
+          <h3 class="chart__title">...</h3>
+          <p class="chart__subtitle">...</p>
+          <div class="chart__container" ...></div>
+          <p class="chart__source">...</p>
+          <p class="chart__footnote"></p>
+        </div>
+        <noscript>
+          <img
+            src="https://assets.bwbx.io/images/users/iqjWHBFdfxIU/ixVSpOB_RdMQ/v0/-1x-1.png">
+        </noscript>
+      </div>
+*/
+  [...document.querySelectorAll('div.chart')].forEach(divChart => {
+    const noscript = divChart.querySelector('noscript');
+    if (!noscript) { return; }
+    const img = noscript.querySelector('img');
+    if (!img) { return; }
+
+    // get alt text from .chart__title, etc.
+    let altText = "";
+    const hTitle = divChart.querySelector('.chart__title');
+    if (hTitle) {
+      altText += hTitle.textContent;
+      hTitle.remove();
+    }
+    const pSubtitle = divChart.querySelector('.chart__subtitle');
+    if (pSubtitle) {
+      altText += ' - ' + pSubtitle.textContent;
+      pSubtitle.remove();
+    }
+    const pSource = divChart.querySelector('.chart__source');
+    if (pSource) {
+      altText += ' - ' + pSource.textContent;
+      pSource.remove();
+    }
+    img.alt = altText;
+
+    // replace noscript with its child img
+    noscript.replaceWith(img);
+  })
+
   if (debug) {
-    console.log(`convertBloomberg complete, body:`);
+    console.log(`  convertBloomberg complete, body:`);
     console.log(docBody.outerHTML);
   }
+
 
   return docBody;
 }
