@@ -53,11 +53,12 @@ function convertImgSrcset (
 
   let srcset = element.srcset ||
     element.dataset.srcset ||
+    element.dataset.original ||
     element.dataset.src;
   
   if (!srcset) {
-    console.error(`ERROR convertImgSrcset srcset and data-srcset missing: ` +
-    `${element.outerHTML}`);
+    console.error(`WARNING convertImgSrcset srcset, data-srcset, ` +
+      `data-origninal missing: ${element.outerHTML}`);
     return element;
   }
 
