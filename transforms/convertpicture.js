@@ -52,9 +52,11 @@ function convertPicture (
     img.src = "";
   }
 
-  // if img src is missing, try getting it from img data-src
-  if (!img.src && img.dataset.src) {
-    img.src = img.dataset.src;
+  // if img src is missing, try getting it from img data-src or data-original
+  if (!img.src &&
+    (img.dataset.src || img.dataset.original)
+  ) {
+    img.src = img.dataset.src || img.dataset.original;
     img.removeAttribute('data-src');
   }
 
