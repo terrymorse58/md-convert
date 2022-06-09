@@ -198,9 +198,22 @@ function convertBloomberg (
     figcaption.replaceWith(blockquote);
   }
 
+  // convert <a href="/..."> to absolute URL
+  [...document.querySelectorAll('a[href^="/"]')]
+    .forEach(anchor => {
+      let href = anchor.href;
+      if (href.startsWith('//')) {
+        href = `https:${href}`;
+      } else {
+        href = `https://bloomberg.com${href}`
+      }
+      anchor.href = href;
+    });
+
   // convert <div class="chart">
 /*
-  sample:
+  example chart:
+
       <div class="chart" data-responsive="true">
         <div class="chart-js">
           <h3 class="chart__title">...</h3>
