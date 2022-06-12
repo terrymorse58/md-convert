@@ -130,7 +130,15 @@ function addTopStoriesToBody (
   if (!hTopStories || !topStories?.length) { return; }
 
   bodyEl.appendChild(document.createElement('hr'));
-  bodyEl.appendChild(hTopStories);
+
+  // insert a link into top stories heading
+  const hTopWithLink = document.createElement('h2');
+  const anchor = document.createElement('a');
+  anchor.href = 'https://apnews.com/hub/ap-top-news';
+  anchor.textContent = hTopStories.textContent;
+  hTopWithLink.appendChild(anchor);
+
+  bodyEl.appendChild(hTopWithLink);
 
   for (const {href, headline, timestamp, imgSrc} of topStories) {
     const hStory = document.createElement('h3'),
