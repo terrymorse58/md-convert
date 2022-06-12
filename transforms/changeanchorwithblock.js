@@ -22,6 +22,16 @@ function isBlockElement (element) {
 }
 
 /**
+ * obtain array of child block elements
+ * @param parent
+ * @return {HTMLElement[]}
+ */
+function blockElementChildren (parent) {
+  return [...parent.children]
+    .filter(child => isBlockElement(child));
+}
+
+/**
  * true if element contains a 'display: block' element
  * @param {HTMLElement} element
  * @return {boolean}
@@ -36,56 +46,119 @@ function elementContainsBlockElement (element) {
 }
 
 /**
- * change anchor to span if it contains a child block element
+ * change anchor if it contains a child block element
  * @param {HTMLDocument} document
- * @param {HTMLAnchorElement} element
+ * @param {HTMLAnchorElement} anchor
  * @param {boolean} [debug]
  */
 function changeAnchorWithBlockChild (
   document,
-  element,
+  anchor,
   {debug = false}
 ) {
   if (debug) {
-    console.log('\nchangeAnchorWithBlockChild()');
-    console.log(`  changeAnchorWithBlockChild element:\n` +
-      `${element.outerHTML}`);
+    console.log(`\nchangeAnchorWithBlockChild() anchor:\n` +
+      `    ${anchor.outerHTML}`);
   }
 
-  const {tagName} = element;
+  const {tagName} = anchor;
 
 
   if (tagName !== 'A') {
     console.error(
       `ERROR changeAnchorWithBlockChild element not anchor: ` +
-      `${element.outerHTML}`
+      `${anchor.outerHTML}`
     );
-    return element;
+    return anchor;
   }
 
-  // search for block element in children
-  if (elementContainsBlockElement(element)) {
+  if (!elementContainsBlockElement(anchor)) {
     if (debug) {
-      console.log(`  changeAnchorWithBlockChild element contains block`);
+      console.log(
+        `  changeAnchorWithBlockChild: no block children, no changes.`);
     }
-    // anchor contains at least one block element, convert anchor to span
-    const newSpan = document.createElement('span');
-    newSpan.innerHTML = element.innerHTML;
-    element.replaceWith(newSpan);
-
-    if (debug) {
-      console.log(`  changeAnchorWithBlockChild newSpan:\n` +
-        `${newSpan.outerHTML}`);
-    }
-
-    return newSpan;
+    return anchor;
   }
+
+  // revise anchor recursively
+  let anchorClone = document.createElement('a');
+  anchorClone.href = anchor.href;
+  anchorClone.innerHTML = anchor.innerHTML;
+  anchorClone = reviseAnchor(document, anchorClone, debug);
 
   if (debug) {
-    console.log(`  changeAnchorWithBlockChild: no changes.`)
+    console.log(`  changeAnchorWithBlockChild complete, anchorClone:\n` +
+      `    ${anchorClone.outerHTML}`);
   }
 
-  return element;
+  anchor.replaceWith(anchorClone);
+
+  return anchorClone;
+}
+
+/**
+ * revise anchor recursively
+ * @param {HTMLDocument} document
+ * @param {HTMLAnchorElement} anchor
+ * @param {Boolean} [debug]
+ * @param {Number} [level]
+ */
+function reviseAnchor (
+  document,
+  anchor,
+  debug = false,
+  level = 0) {
+
+  if (debug) {
+    console.log(`reviseAnchor level ${level} anchor:`, anchor?.outerHTML);
+  }
+
+  const {href} = anchor;
+
+  if (!elementContainsBlockElement(anchor)) {
+    if (debug) {
+      console.log(`  reviseAnchor no block children, ignoring:\n`,
+        anchor.outerHTML);
+    }
+    return anchor;
+  }
+
+  // insert anchor into block child, or wrap anchor around non-block child
+  for (const child of [...anchor.children]) {
+
+    if (debug) {
+      console.log(`    child:\n    `, child.outerHTML);
+    }
+
+    let aChild = document.createElement('a');
+    aChild.href = href;
+
+    if (isBlockElement(child)) {
+      // insert anchor inside block child
+      aChild.innerHTML = child.innerHTML;
+      child.innerHTML = aChild.outerHTML;
+    } else {
+      // wrap non-block child in anchor
+      aChild.innerHTML = child.outerHTML;
+      child.replaceWith(aChild);
+    }
+
+    // if (debug) {
+    //   console.log(`    aChild:\n    `, aChild.outerHTML);
+    // }
+  }
+
+  // replace original anchor with span
+  const span = document.createElement('span');
+  span.innerHTML = anchor.innerHTML;
+  anchor.replaceWith(span);
+
+  if (debug) {
+    console.log(`  reviseAnchor complete span:\n${span.outerHTML}\n`);
+  }
+
+  return span;
+
 }
 
 export { changeAnchorWithBlockChild };
