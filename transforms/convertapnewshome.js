@@ -216,6 +216,7 @@ function convertApnewsHome (
   // get all the feed cards
   const feedCards = [];
   const feedCardDivs = getFeedCards(document);
+  const feedCardHrefs = new Set();
   feedCardDivs.forEach(fcDiv => {
     // get title of FeedCard
     const aFeedCard = fcDiv.querySelector(
@@ -242,8 +243,9 @@ function convertApnewsHome (
     if (aLeadArticle && aLeadArticle.tagName === 'A') {
       const href = aLeadArticle?.href,
         headline = removeExtraWhitespace(aLeadArticle.textContent?.trim());
-      if (href && headline) {
+      if (href && headline && !feedCardHrefs.has(href)) {
         feedCard.articles.push({href, headline});
+        feedCardHrefs.add(href);
       }
     }
 
@@ -253,8 +255,9 @@ function convertApnewsHome (
       .forEach(anchor => {
         const href = anchor?.href,
           headline = removeExtraWhitespace(anchor.textContent?.trim());
-        if (href && headline) {
+        if (href && headline && !feedCardHrefs.has(href)) {
           feedCard.articles.push({href, headline});
+          feedCardHrefs.add(href);
         }
       });
 
