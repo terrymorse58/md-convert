@@ -1,0 +1,23 @@
+{
+  "description": "test22 - test convertApnewsFeedCard",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [
+    ],
+    "transform": [
+      {
+        "comment": "convert apnews FeedCard",
+        "selector": "div.FeedCard",
+        "conversions": [
+          {
+            "type": "convertApnewsFeedCard",
+            "debug": true
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}

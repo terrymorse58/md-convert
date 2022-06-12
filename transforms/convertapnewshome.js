@@ -1,7 +1,5 @@
 // mdconvert transform 'convertApnewsHome' - convert apnews home page
 
-import { changeInnerHTML } from './changeinnerhtml.js';
-
 /**
  * remove extra whitespace from a string
  * @param {String} str

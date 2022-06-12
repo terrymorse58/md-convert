@@ -26,6 +26,7 @@ import { convertBILazyImage } from './transforms/convertbilazyimage.js';
 import { convertTimestamp } from './transforms/converttimestamp.js';
 import { convertPicture } from './transforms/convertpicture.js';
 import { convertApnewsHome } from './transforms/convertapnewshome.js';
+import { convertApnewsFeedCard } from './transforms/convertapnewsfeedcard.js';
 
 
 const transformer = {
@@ -50,7 +51,8 @@ const transformer = {
   convertBILazyImage,
   convertTimestamp,
   convertPicture,
-  convertApnewsHome
+  convertApnewsHome,
+  convertApnewsFeedCard
 };
 
 export {
