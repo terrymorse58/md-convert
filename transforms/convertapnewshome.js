@@ -276,12 +276,12 @@ function convertApnewsHome (
     newBody.appendChild(h3);
 
     feedCard.articles.forEach(({href, headline}) => {
-      const h4 = document.createElement('h4'),
+      const h5 = document.createElement('h5'),
         anchor = document.createElement('a');
       anchor.href = href;
       anchor.textContent = headline;
-      h4.appendChild(anchor);
-      newBody.appendChild(h4);
+      h5.appendChild(anchor);
+      newBody.appendChild(h5);
     })
   })
 
