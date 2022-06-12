@@ -9,7 +9,8 @@
         "selector": "video",
         "conversions": [
           {
-            "type": "changeVideoPosterToImg"
+            "type": "changeVideoPosterToImg",
+            "debug": true
           }
         ]
       }
