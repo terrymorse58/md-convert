@@ -1,0 +1,33 @@
+{
+  "description": "test20 - test convertApnewsHome",
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": [
+    ],
+    "transform": [
+      {
+        "comment": "convert apnews home page",
+        "selector": "body",
+        "conversions": [
+          {
+            "type": "convertApnewsHome",
+            "debug": false
+          }
+        ]
+      },
+      {
+        "comment": "add apnews logo at start of page",
+        "selector": "body > :first-child",
+        "conversions": [
+          {
+            "type": "insertBefore",
+            "htmlStr": "<hr><br><h2>Test of transformer -- `convertApnewsHome`</h2><br><br><hr><hr>"
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}
