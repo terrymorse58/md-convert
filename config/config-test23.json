@@ -1,0 +1,30 @@
+{
+  "description": "test23 - NY Times home page",
+  "domain": "",
+  "urls": ["https//nytimes.com", "https//nytimes.com/"],
+  "scrapeConfig": {
+    "scrapeWithAxios": true,
+    "removeLinkEls": true,
+    "removeScripts": true,
+    "removeStyles": true
+  },
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": null,
+    "transform": [
+      {
+        "comment": "convert MY Times home page",
+        "selector": "body",
+        "conversions": [
+          {
+            "type": "convertNytimesHome",
+            "debug": true
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}

@@ -66,7 +66,9 @@ function convertApnewsFeedCard (
 
   if (byline || timestamp) {
     const p = document.createElement('p');
-    p.textContent = (byline || '') + ' — ' + (timestamp || '');
+    p.textContent = '';
+    if (byline) {p.textContent += byline;}
+    if (timestamp) {p.textContent += ` — ${timestamp}`}
     newDiv.appendChild(p);
   }
 

@@ -27,6 +27,7 @@ import { convertTimestamp } from './transforms/converttimestamp.js';
 import { convertPicture } from './transforms/convertpicture.js';
 import { convertApnewsHome } from './transforms/convertapnewshome.js';
 import { convertApnewsFeedCard } from './transforms/convertapnewsfeedcard.js';
+import { convertNytimesHome } from './transforms/convertnytimeshome.js';
 
 
 const transformer = {
@@ -52,7 +53,8 @@ const transformer = {
   convertTimestamp,
   convertPicture,
   convertApnewsHome,
-  convertApnewsFeedCard
+  convertApnewsFeedCard,
+  convertNytimesHome
 };
 
 export {

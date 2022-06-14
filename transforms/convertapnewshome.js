@@ -1,13 +1,6 @@
 // mdconvert transform 'convertApnewsHome' - convert apnews home page
 
-/**
- * remove extra whitespace from a string
- * @param {String} str
- * @return {String}
- */
-function removeExtraWhitespace (str) {
-  return str.replace(/\s\s+/g, ' ');
-}
+import { removeExtraWhitespace} from '../js/whitespace.js';
 
 function getTopStoriesHeading (document, divLanding, debug) {
   // get "Top Stories" section
