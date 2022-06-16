@@ -62,14 +62,22 @@ function omitIfNoTextOrImage (
   if (debug) {
     console.log('omitIfNoTextOrImage() element:\n', element.outerHTML);
   }
-  let omit;
 
-  if (tagNameCannotHaveChildren(element.tagName) ||
-    hasNonWhitespace(element.textContent) ||
-    elementContainsImage(element)
-  ) {
+  const cantHaveChildren = tagNameCannotHaveChildren(element.tagName),
+    hasTextContent = hasNonWhitespace(element.textContent),
+    hasImage = elementContainsImage(element);
+
+  if (debug) {
+    console.log(`  omitIfNoTextOrImage:\n` +
+      `    cantHaveChildren: ${cantHaveChildren}\n` +
+      `    hasTextContent: ${hasTextContent}\n` +
+      `    hasImage: ${hasImage}`
+    );
+  }
+
+  if (cantHaveChildren || hasTextContent || hasImage) {
     if (debug) {
-      console.log(`  omitIfNoTextOrImage: NOT omitting.`);
+      console.log(`  omitIfNoTextOrImage: NOT touching.`);
     }
     return element;
   }
