@@ -67,13 +67,13 @@ function omitIfNoTextOrImage (
     hasTextContent = hasNonWhitespace(element.textContent),
     hasImage = elementContainsImage(element);
 
-  if (debug) {
-    console.log(`  omitIfNoTextOrImage:\n` +
-      `    cantHaveChildren: ${cantHaveChildren}\n` +
-      `    hasTextContent: ${hasTextContent}\n` +
-      `    hasImage: ${hasImage}`
-    );
-  }
+  // if (debug) {
+  //   console.log(`  omitIfNoTextOrImage:\n` +
+  //     `    cantHaveChildren: ${cantHaveChildren}, ` +
+  //     `    hasTextContent: ${hasTextContent}, ` +
+  //     `    hasImage: ${hasImage}`
+  //   );
+  // }
 
   if (cantHaveChildren || hasTextContent || hasImage) {
     if (debug) {

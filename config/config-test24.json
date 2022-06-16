@@ -1,0 +1,26 @@
+{
+  "description": "test24 - test of omitIfNoTextOrImage",
+  "domains": null,
+  "scrapeConfig": {
+    "scrapeWithAxios": true
+  },
+  "htmlMdConfig": {
+    "frontMatter": null,
+    "omit": null,
+    "transform": [
+      {
+        "comment": "omit anchors without content",
+        "selector": "a",
+        "conversions": [
+          {
+            "type": "omitIfNoTextOrImage",
+            "debug": true
+          }
+        ]
+      }
+    ],
+    "select": [
+      "body"
+    ]
+  }
+}

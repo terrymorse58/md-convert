@@ -10,10 +10,22 @@ function removeExtraWhitespace (str) {
 /**
  * returns true if any character in str is non-whitespace
  * @param {String} str
+ * @param {Boolean} [debug]
  * @return {boolean}
  */
-function hasNonWhitespace (str) {
-  return str.search(/[\S]/gm) > 0;
+function hasNonWhitespace (str, debug= false) {
+
+  if (debug) {
+    console.log(`hasNoWhiteSpace() str: '${str}'`)
+  }
+
+  const firstFound = str.match(/[\S]/);
+
+  if (debug) {
+    console.log(`  hasNoWhiteSpace firstFound: ${firstFound}`);
+  }
+
+  return (firstFound !== null);
 }
 
 export {
