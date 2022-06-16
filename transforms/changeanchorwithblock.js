@@ -1,7 +1,12 @@
 // mdconvert transform 'changeAnchorWithBlockChild' - convert anchor to a span
 // if it contains at least one block element
 
-// 'display: block' elements (copied from turndown package)
+import { hasNonWhitespace } from '../js/whitespace.js';
+
+/**
+ * tag names of block elements
+ * @type {string[]}
+ */
 const blockElements = [
   'ADDRESS', 'ARTICLE', 'ASIDE', 'AUDIO', 'BLOCKQUOTE', 'BODY', 'CANVAS',
   'CENTER', 'DD', 'DIR', 'DIV', 'DL', 'DT', 'FIELDSET', 'FIGCAPTION', 'FIGURE',
@@ -22,16 +27,6 @@ function isBlockElement (element) {
 }
 
 /**
- * obtain array of child block elements
- * @param parent
- * @return {HTMLElement[]}
- */
-function blockElementChildren (parent) {
-  return [...parent.children]
-    .filter(child => isBlockElement(child));
-}
-
-/**
  * true if element contains a 'display: block' element
  * @param {HTMLElement} element
  * @return {boolean}
@@ -46,23 +41,77 @@ function elementContainsBlockElement (element) {
 }
 
 /**
- * change anchor if it contains a child block element
+ * form array of `last descendant` children elements
+ * @param {HTMLDocument} document
+ * @param {Window} window
+ * @param {Node} node
+ * @param {Boolean} [debug]
+ * @return {HTMLElement[]}
+ */
+function getLastDescendants (
+  document,
+  window,
+  node,
+  debug = false
+) {
+
+  // if (debug) {
+  //   console.log(`\ngetLastDescendants() nodeType: ${node.nodeType}`);
+  // }
+
+  const Node = window.Node;
+
+  // for text node, wrap text in span
+  if (node.nodeType === Node.TEXT_NODE) {
+    const span = document.createElement('span');
+    span.textContent = node.nodeValue;
+    return [span];
+  }
+
+  // ignore all node types other than element
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return [];
+  }
+
+  // return this element if it has no child elements
+  const element = /** @type {HTMLElement} **/ node;
+  if (element.children.length === 0) {
+    return [element];
+  }
+
+  // search children of this element (depth-first search)
+  let descendants = [];
+  for (const child of node.childNodes) {
+    const childsKids = getLastDescendants(document, window, child, debug);
+    if (childsKids.length > 0) {
+      descendants = [...descendants, ...childsKids];
+    }
+  }
+
+  return descendants;
+}
+
+/**
+ * change anchor if it contains child block elements
+ * - insert anchor into block element
+ * - wrap anchor around non-block element
  * @param {HTMLDocument} document
  * @param {HTMLAnchorElement} anchor
  * @param {boolean} [debug]
+ * @param {Window} window
  */
 function changeAnchorWithBlockChild (
   document,
   anchor,
-  {debug = false}
+  {debug = false},
+  window
 ) {
   if (debug) {
     console.log(`\nchangeAnchorWithBlockChild() anchor:\n` +
       `    ${anchor.outerHTML}`);
   }
 
-  const {tagName} = anchor;
-
+  const {tagName, href} = anchor;
 
   if (tagName !== 'A') {
     console.error(
@@ -75,25 +124,74 @@ function changeAnchorWithBlockChild (
   if (!elementContainsBlockElement(anchor)) {
     if (debug) {
       console.log(
-        `  changeAnchorWithBlockChild: no block children, no changes.`);
+        `  changeAnchorWithBlockChild: no block descendant, no changes.\n`);
     }
     return anchor;
   }
 
-  // revise anchor recursively
-  let anchorClone = document.createElement('a');
-  anchorClone.href = anchor.href;
-  anchorClone.innerHTML = anchor.innerHTML;
-  anchorClone = reviseAnchor(document, anchorClone, debug);
+  // form array of 'last descendant' elements
+  const blockChildren = getLastDescendants(document, window, anchor, debug);
 
-  if (debug) {
-    console.log(`  changeAnchorWithBlockChild complete, anchorClone:\n` +
-      `    ${anchorClone.outerHTML}`);
+  // combine adjacent elements of the same type
+  for (let i = 0; i < blockChildren.length; i++) {
+    const elI = blockChildren[i];
+    const iTagName = elI.tagName;
+    const jNext = i + 1;
+    while (blockChildren.length > jNext) {
+      const elJ = blockChildren[jNext];
+      const jTagName = elJ.tagName;
+      if (jTagName !== iTagName) { break; }
+
+      elI.innerHTML += elJ.innerHTML;
+      blockChildren.splice(jNext, 1);
+    }
   }
 
-  anchor.replaceWith(anchorClone);
+  // create span wrapper to contain all the elements
+  const spanWrapper = document.createElement('span');
+  spanWrapper.className = 'changeAnchorWithBlockChild';
 
-  return anchorClone;
+  // insert elements into spanWrapper
+  for (const el of blockChildren) {
+
+    if (isBlockElement(el)) {
+
+      // block element: place anchor inside element
+      const a = document.createElement('a');
+      a.href = href;
+      a.innerHTML = el.innerHTML;
+      el.innerHTML = '';
+      el.appendChild(a);
+      spanWrapper.appendChild(el);
+
+    } else if (el.tagName === 'SPAN' &&
+      !hasNonWhitespace(el.textContent)) {
+
+      // span containing only whitespace: no anchor wrap
+      spanWrapper.appendChild(el);
+
+    } else {
+
+      // non-block element that isn't 'span',
+      // or 'span' with non-whitespace:
+      // wrap anchor around element
+      const a = document.createElement('a');
+      a.href = href;
+      a.appendChild(el);
+      spanWrapper.appendChild(a);
+
+    }
+  }
+
+  if (debug) {
+    console.log(`  changeAnchorWithBlockChild complete spanWrapper:`);
+    console.log(`    ${spanWrapper.outerHTML}\n`);
+  }
+
+  anchor.replaceWith(spanWrapper);
+
+  return spanWrapper;
+
 }
 
 /**

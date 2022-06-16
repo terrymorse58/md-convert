@@ -254,19 +254,7 @@ function convertNytimesImgs (document,
   });
 
   if (debug) {
-    console.log(`\nsubjects:`);
-    let iSub = 0;
-    for (const {lazyContainer, caption, credit} of subjects) {
-      console.log(
-        `  [${iSub++}]:\n` +
-        `    lazyContainer: ${lazyContainer.outerHTML},\n` +
-        `    caption: '${caption}',\n` +
-        `    credit: '${credit}'`
-      );
-    }
-    if (iSub === 0) {
-      console.log(`   No subjects found.`);
-    }
+    console.log(`\nconvertNytimesImgs subjects: `, subjects);
   }
 
   // skip processing if no subjects found
@@ -275,6 +263,10 @@ function convertNytimesImgs (document,
   }
 
   const initStateImages = getInitialStateImageData(window, document, debug);
+
+  if (debug) {
+    console.log(`\nconvertNytimesImgs initStateImages:`, initStateImages);
+  }
 
   console.assert(
     initStateImages.length >= subjects.length,
