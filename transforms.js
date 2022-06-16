@@ -28,6 +28,7 @@ import { convertPicture } from './transforms/convertpicture.js';
 import { convertApnewsHome } from './transforms/convertapnewshome.js';
 import { convertApnewsFeedCard } from './transforms/convertapnewsfeedcard.js';
 import { convertNytimesHome } from './transforms/convertnytimeshome.js';
+import { omitIfNoTextOrImage } from './transforms/omitifnotextorimage.js';
 
 
 const transformer = {
@@ -54,7 +55,8 @@ const transformer = {
   convertPicture,
   convertApnewsHome,
   convertApnewsFeedCard,
-  convertNytimesHome
+  convertNytimesHome,
+  omitIfNoTextOrImage
 };
 
 export {

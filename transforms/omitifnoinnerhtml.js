@@ -37,10 +37,10 @@ function omitIfNoInnerHTML (
 
   if (excludeEls.includes(element.tagName)) { return element; }
 
-    if (element.innerHTML.length === 0) {
-      element.remove();
-      return null;
-    }
+  if (element.innerHTML.length === 0) {
+    element.remove();
+    return null;
+  }
   return element;
 }
 
